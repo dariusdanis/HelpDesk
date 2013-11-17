@@ -114,6 +114,11 @@
 			<artifactId>wicked-charts-wicket6</artifactId>
 			<version>1.5.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-auth-roles</artifactId>
+			<version>6.11.0</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

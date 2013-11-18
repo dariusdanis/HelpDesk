@@ -27,6 +27,11 @@ public class UserDaoJpa implements UserDao{
 	    	return null;
 	    }	
 	}
+
+	@Override
+	public void merge(UserEntity userEntity) {
+		em.merge(userEntity);
+	}
 	
 	
 }

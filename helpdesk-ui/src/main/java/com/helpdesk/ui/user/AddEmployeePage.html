@@ -1,0 +1,65 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div class="container-fluid">
+        <div id="pad-wrapper" class="new-user">
+            <div class="row-fluid header">
+                <h3>Add a new employee</h3>
+            </div>
+            <div class="row-fluid form-wrapper">
+                <div class="span12">
+                    <div class="container">
+                        <form class="new_user_form inline-input" wicket:id="employeeForm" id="employeeForm">
+                            <div class="span12 field-box">
+                                <label>Position:</label>
+                                <div class="ui-select span5" style="margin-top: 7px;">
+                                    <select wicket:id="position"></select>
+                                </div>
+                            </div>                            
+                            <div class="span12 field-box">
+                                <label>Name:</label>
+                                <input wicket:id="name" class="span10" type="text" 
+                                 data-validation-engine="validate[required]"
+                                 data-errormessage-value-missing="Name is required!" />
+                            </div>
+                            <div class="span12 field-box">
+                                <label>Surname:</label>
+                                <input wicket:id="surname" class="span10" type="text" 
+                                data-validation-engine="validate[required]"
+                                data-errormessage-value-missing="Surname is required!"/>
+                            </div>
+                              <div class="span12 field-box">
+                                <label>Email:</label>
+                                <input wicket:id="email" class="span10" type="text" 
+	                                data-validation-engine="validate[required,custom[email]]"
+								    data-errormessage-value-missing="Email is required!" 
+								    data-errormessage-custom-error="Let me give you a hint: someone@nowhere.com" />
+                            </div>
+                            <div class="span12 field-box">
+                                <label>Phone:</label>
+                                <input wicket:id="phone" class="span10" type="text" 
+                                data-validation-engine="validate[required, custom[phoneLt]]"
+                                data-errormessage-value-missing="Phone is required!"/>
+                            </div>
+                             <div class="span12 field-box">
+                                <label>Password:</label>
+                                <input wicket:id="password" class="span10" type="password" 
+                                data-validation-engine="validate[required]"
+                                data-errormessage-value-missing="Password is required!"/>
+                            </div>
+                            <div class="span11 field-box actions">
+                                <button type="submit" class="btn-glow primary">Add employee"</button>
+                                <span>OR</span>
+                                <input type="reset" value="Cancel" class="reset" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <script>
+	   jQuery("#employeeForm").validationEngine({
+	       validationEventTrigger : "submit",
+	       showOneMessage : true
+	   });
+   </script>
+</wicket:extend>

@@ -5,7 +5,7 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import com.helpdesk.ui.BasePage;
 import com.helpdesk.ui.SingInPage;
 
-public class UserMainPage extends BasePage {
+public class HomePage extends BasePage {
 	private static final long serialVersionUID = 1L;
 	
 	@Override

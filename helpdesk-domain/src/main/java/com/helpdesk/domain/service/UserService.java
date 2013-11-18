@@ -18,4 +18,8 @@ public class UserService {
 		return userDao.findByEmail(email);
 	}
 	
+	@Transactional
+	public void merge(UserEntity userEntity) {
+		userDao.merge(userEntity);
+	}
 }

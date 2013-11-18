@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.RepeatingView;
 
+import com.helpdesk.ui.user.AddEmployeePage;
 import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
@@ -17,7 +18,8 @@ public class BasePage extends WebPage {
 	protected void onInitialize() {
 		super.onInitialize();
 		RepeatingView repeatingView = new RepeatingView("menuItems");
-		repeatingView.add(menuItem(repeatingView.newChildId(), ProfilePage.class, "Personal info"));
+		repeatingView.add(menuItem(repeatingView.newChildId(), ProfilePage.class, "Personal Info"));
+		repeatingView.add(menuItem(repeatingView.newChildId(), AddEmployeePage.class, "Add Employee"));
 		add(initLogOffLink("logOff"));
 		add(repeatingView);
 	}

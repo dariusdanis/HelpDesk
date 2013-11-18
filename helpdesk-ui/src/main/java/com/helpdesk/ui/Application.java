@@ -7,8 +7,9 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.stereotype.Component;
 
+import com.helpdesk.ui.user.AddEmployeePage;
 import com.helpdesk.ui.user.ProfilePage;
-import com.helpdesk.ui.user.UserMainPage;
+import com.helpdesk.ui.user.HomePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
 @Component("wicketApplication")
@@ -16,7 +17,7 @@ public class Application extends AuthenticatedWebApplication {
 
 	@Override
 	public Class<? extends Page> getHomePage() {
-		return UserMainPage.class;
+		return HomePage.class;
 	}
 
 	@Override
@@ -27,7 +28,8 @@ public class Application extends AuthenticatedWebApplication {
 		getComponentInstantiationListeners().add(
 				new SpringComponentInjector(this));
 		mountPage("/login", SingInPage.class);
-		mountPage("/profile", ProfilePage.class);
+		mountPage("user/profile", ProfilePage.class);
+		mountPage("employee/add", AddEmployeePage.class);
 	}
 
 	@Override

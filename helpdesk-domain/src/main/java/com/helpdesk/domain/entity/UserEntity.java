@@ -3,6 +3,8 @@ package com.helpdesk.domain.entity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class UserEntity {
@@ -10,10 +12,15 @@ public class UserEntity {
 	@Id
 	@GeneratedValue
 	private int id;
+	private String name;
+	private String surname;
 	private String email;
-	private Long telNr;
+	private Long phone;
 	private String password;
-	private String role;
+	
+    @ManyToOne
+    @JoinColumn(name = "roleFk")
+	private RoleEntity roleEntity;
 	
 	public UserEntity() {}
 	
@@ -33,14 +40,6 @@ public class UserEntity {
 		this.email = email;
 	}
 	
-	public Long getTelNr() {
-		return telNr;
-	}
-	
-	public void setTelNr(Long telNr) {
-		this.telNr = telNr;
-	}
-	
 	public String getPassword() {
 		return password;
 	}
@@ -49,12 +48,36 @@ public class UserEntity {
 		this.password = password;
 	}
 
-	public String getRole() {
-		return role;
+	public String getName() {
+		return name;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setName(String name) {
+		this.name = name;
 	}
 
+	public String getSurname() {
+		return surname;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public RoleEntity getRoleEntity() {
+		return roleEntity;
+	}
+
+	public void setRoleEntity(RoleEntity roleEntity) {
+		this.roleEntity = roleEntity;
+	}
+
+	public Long getPhone() {
+		return phone;
+	}
+
+	public void setPhone(Long phone) {
+		this.phone = phone;
+	}
+	
 }

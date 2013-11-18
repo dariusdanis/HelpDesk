@@ -5,5 +5,5 @@ import com.helpdesk.domain.entity.UserEntity;
 public interface UserDao {
 
 	UserEntity findByEmail(String email);
-	
+	void merge (UserEntity userEntity);
 }

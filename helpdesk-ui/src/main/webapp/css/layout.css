@@ -395,7 +395,7 @@ input.search{
 
 
 #pad-wrapper {
-	padding: 0px 25px;
+	padding: 0px 70px 25px;
 	margin-top: 55px;
 }
 #pad-wrapper h4 {
@@ -404,15 +404,14 @@ input.search{
 	font-style: italic;
 }
 .content {
-	min-width: 400px;
-	min-height: 620px;
-	margin-bottom: 100px;
-	padding-bottom: 50px;
+    margin: 0px auto 0px auto;
+    width: 1000px;
+	min-width: 1000px;
 	overflow: hidden;
 	position: relative;
 	background: #fff;
-	margin-left: 177px;
 	border-left: 1px solid #dae3e9;
+	border-right: 1px solid #dae3e9;
 	border-bottom: 1px solid #dae3e9;
 	box-shadow: -3px 3px 3px -2px #f1f1f3;
 	border-radius: 0px 0px 0px 5px;

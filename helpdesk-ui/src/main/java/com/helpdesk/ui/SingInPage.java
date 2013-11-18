@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
-import com.helpdesk.ui.user.UserMainPage;
+import com.helpdesk.ui.user.HomePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
 public class SingInPage extends WebPage {
@@ -52,7 +52,7 @@ public class SingInPage extends WebPage {
             public void onSubmit(AjaxRequestTarget target, Form<?> form) {
             	if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
             		if (((HelpDeskSession) getSession()).signIn(email, password)) {
-            			setResponsePage(UserMainPage.class);
+            			setResponsePage(HomePage.class);
             		}	
             	}
             	info("Try again");

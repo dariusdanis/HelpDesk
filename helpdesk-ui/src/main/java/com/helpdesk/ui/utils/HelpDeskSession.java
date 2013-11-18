@@ -33,7 +33,7 @@ public class HelpDeskSession extends AuthenticatedWebSession {
 	@Override
 	public Roles getRoles() {
 		if (isSignedIn()) {
-			return new Roles(user.getRole());
+			return new Roles(user.getRoleEntity().getRole());
 		}
 		return null;
 	}

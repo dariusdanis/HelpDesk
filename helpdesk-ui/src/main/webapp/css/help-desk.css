@@ -1,6 +1,11 @@
+html {
+	height: 100%;
+	min-height: 600px;
+}
 body {
 	background-color: #f7f7f7
 	min-width: 940px;
+	height: 100%;
 }
 
 div.container .content {
@@ -93,4 +98,13 @@ header#top-nav .nav-wrap .visitor-functions a {
 	width: 100%;
 	min-width: 1000px;
 	background: linear-gradient(to bottom, #2c3742 0%,#28303a 100%);
+}
+
+textarea {
+    margin-top: 7px; 
+    min-height: 235px !important; 
+    max-height: 235px !important;
+    max-width: 576px;
+    min-width: 576px;
+    border-color: #c73939 !important;  
 }

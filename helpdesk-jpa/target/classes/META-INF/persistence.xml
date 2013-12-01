@@ -6,5 +6,7 @@
     <persistence-unit name="food" transaction-type="RESOURCE_LOCAL">
         <class>com.helpdesk.domain.entity.UserEntity</class>
         <class>com.helpdesk.domain.entity.RoleEntity</class>
+        <class>com.helpdesk.domain.entity.RequestEntity</class>
+        <class>com.helpdesk.domain.entity.TypeEntity</class>
     </persistence-unit>
 </persistence>

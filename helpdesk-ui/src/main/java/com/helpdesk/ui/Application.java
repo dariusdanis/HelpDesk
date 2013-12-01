@@ -8,8 +8,9 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.stereotype.Component;
 
 import com.helpdesk.ui.user.AddEmployeePage;
-import com.helpdesk.ui.user.ProfilePage;
+import com.helpdesk.ui.user.AddRequestPage;
 import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
 @Component("wicketApplication")
@@ -25,11 +26,11 @@ public class Application extends AuthenticatedWebApplication {
 		super.init();
 		getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 		getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
-		getComponentInstantiationListeners().add(
-				new SpringComponentInjector(this));
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
 		mountPage("/login", SingInPage.class);
 		mountPage("user/profile", ProfilePage.class);
 		mountPage("employee/add", AddEmployeePage.class);
+		mountPage("request/add", AddRequestPage.class);
 	}
 
 	@Override

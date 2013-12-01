@@ -1,10 +1,14 @@
 package com.helpdesk.domain.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class UserEntity {
@@ -22,6 +26,9 @@ public class UserEntity {
     @JoinColumn(name = "roleFk")
 	private RoleEntity roleEntity;
 	
+    @OneToMany(targetEntity = RequestEntity.class, cascade = CascadeType.ALL, mappedBy = "userEntity")
+    private List<RequestEntity> requestEntity;
+    
 	public UserEntity() {}
 	
 	public int getId() {
@@ -79,5 +86,13 @@ public class UserEntity {
 	public void setPhone(Long phone) {
 		this.phone = phone;
 	}
-	
+
+	public List<RequestEntity> getRequestEntity() {
+		return requestEntity;
+	}
+
+	public void setRequestEntity(List<RequestEntity> requestEntity) {
+		this.requestEntity = requestEntity;
+	}
+
 }

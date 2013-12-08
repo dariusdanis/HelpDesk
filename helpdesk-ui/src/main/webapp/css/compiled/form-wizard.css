@@ -86,7 +86,7 @@
 
 /* step content */
 .step-content {
-
+	
 }
 
 .step-content .step-pane {
@@ -134,6 +134,10 @@
 	margin-bottom: -4px;
 }
 
+.hidden {
+	visibility: hidden;
+}
+
 .form-wrapper .alert-msg i {
 	font-size: 14px;
 }
@@ -147,11 +151,15 @@
 
 .form-wrapper .field-box.error label,.form-wrapper .field-box.error .alert-msg
 	{
-	color: #c73939;
+	color: #EE5D5D;
 }
 
 .form-wrapper .field-box.error input {
-	border-color: #c73939;
+	border-color: #EE5D5D;
+}
+
+.form-wrapper .field-box.error textarea {
+    border-color: #EE5D5D;
 }
 
 .form-wrapper .field-box.success label,.form-wrapper .field-box.success .alert-msg

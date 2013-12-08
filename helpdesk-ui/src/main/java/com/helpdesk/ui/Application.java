@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import com.helpdesk.ui.user.AddEmployeePage;
 import com.helpdesk.ui.user.AddRequestPage;
 import com.helpdesk.ui.user.HomePage;
-import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
 @Component("wicketApplication")
@@ -20,17 +19,21 @@ public class Application extends AuthenticatedWebApplication {
 	public Class<? extends Page> getHomePage() {
 		return HomePage.class;
 	}
-
+	
 	@Override
 	protected void init() {
 		super.init();
 		getRequestCycleSettings().setResponseRequestEncoding("UTF-8");
 		getMarkupSettings().setDefaultMarkupEncoding("UTF-8");
 		getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-		mountPage("/login", SingInPage.class);
-		mountPage("user/profile", ProfilePage.class);
+		mountPage("login", SingInPage.class);
 		mountPage("employee/add", AddEmployeePage.class);
 		mountPage("request/add", AddRequestPage.class);
+	}
+
+	@Override
+	protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass() {
+		return HelpDeskSession.class;
 	}
 
 	@Override
@@ -38,9 +41,5 @@ public class Application extends AuthenticatedWebApplication {
 		return SingInPage.class;
 	}
 
-	@Override
-	protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass() {
-		return HelpDeskSession.class;
-	}
 
 }

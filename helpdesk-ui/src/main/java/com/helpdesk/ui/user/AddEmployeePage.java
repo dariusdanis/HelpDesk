@@ -2,9 +2,10 @@ package com.helpdesk.ui.user;
 
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.ListChoice;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.PropertyModel;
@@ -41,15 +42,17 @@ public class AddEmployeePage extends BasePage {
 	}
 
 	private Form<?> initForm(String wicketId) {
-		Form<?> form = new Form<Void>(wicketId){
+		Form<?> form = new Form<Void>(wicketId);
+		form.add(new AjaxFormSubmitBehavior("onsubmit") {
 			private static final long serialVersionUID = 1L;
 			
 			@Override
-			protected void onSubmit() {
-				userService.merge(userEntity);
+			protected void onSubmit(AjaxRequestTarget target) {
+				System.out.println("jo");
 			}
-
-		};
+			
+			
+		});
 		return form;
 	}
 	
@@ -65,8 +68,8 @@ public class AddEmployeePage extends BasePage {
 		return textField;
 	}
 	
-	private ListChoice<RoleEntity> initPositionDropDown(String wicketId, List<RoleEntity> list, String expression) {
-		ListChoice<RoleEntity> roles = new ListChoice<RoleEntity>(wicketId,
+	private DropDownChoice<RoleEntity> initPositionDropDown(String wicketId, List<RoleEntity> list, String expression) {
+		DropDownChoice<RoleEntity> roles = new DropDownChoice<RoleEntity>(wicketId,
 				new PropertyModel<RoleEntity>(this, expression), list){
 			private static final long serialVersionUID = 1L;
 
@@ -76,12 +79,7 @@ public class AddEmployeePage extends BasePage {
         }
 		
 	};
-	/*
-	 * TODO Wicketo sudas, bbz kazkodel kai susirenderina size buna 8 ar kažkoks kitas bibys :D
-	 * tingiu dabar aiškintis
-	 */
-	roles.add(new AttributeModifier("size", "1"));
 	return roles;
-}
+	}
 	
 }

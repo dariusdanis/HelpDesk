@@ -58,7 +58,7 @@
     <div class="hp-header">
 	    <div class="navbar navbar-inverse">
 	        <div class="navbar-inner">
-	            <a class="brand" href="index.html"><img src="img/logo.png" /></a>
+	            <a class="brand" href="#" wicket:id="home"><img src="img/logo.png" /></a>
 	            <ul class="nav pull-right">                
 	                <li class="hidden-phone">
 	                    <input class="search" type="text" />
@@ -66,7 +66,8 @@
 	                <li class="notification-dropdown hidden-phone">
 	                    <a href="#" class="trigger">
 	                        <i class="icon-warning-sign"></i>
-	                        <span class="count">6</span>
+	                        <span class="count" id="notificationCounter" wicket:id="notificationCounter">
+	                        </span>
 	                    </a>
 	                    <div class="pop-dialog">
 	                        <div class="pointer right">
@@ -85,21 +86,6 @@
 	                                    <i class="icon-signin"></i> New user registration
 	                                    <span class="time"><i class="icon-time"></i> 18 min.</span>
 	                                </a>
-	                                <a href="#" class="item">
-	                                    <i class="icon-envelope-alt"></i> New message from Alejandra
-	                                    <span class="time"><i class="icon-time"></i> 28 min.</span>
-	                                </a>
-	                                <a href="#" class="item">
-	                                    <i class="icon-signin"></i> New user registration
-	                                    <span class="time"><i class="icon-time"></i> 49 min.</span>
-	                                </a>
-	                                <a href="#" class="item">
-	                                    <i class="icon-download-alt"></i> New order placed
-	                                    <span class="time"><i class="icon-time"></i> 1 day.</span>
-	                                </a>
-	                                <div class="footer">
-	                                    <a href="#" class="logout">View all notifications</a>
-	                                </div>
 	                            </div>
 	                        </div>
 	                    </div>
@@ -171,6 +157,15 @@
 		    
 	    </wicket:child>
     </div>
+
+    <script type="text/javascript">
+    
+    function updateNotificationCounter(jqEvent, counter) { 
+        var notificationCounter = document.getElementById('notificationCounter');
+        notificationCounter.innerHTML = counter;
+    }
+    
+    </script>
 
 </body>
 </html>

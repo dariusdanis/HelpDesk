@@ -8,5 +8,7 @@
         <class>com.helpdesk.domain.entity.RoleEntity</class>
         <class>com.helpdesk.domain.entity.RequestEntity</class>
         <class>com.helpdesk.domain.entity.TypeEntity</class>
+        <class>com.helpdesk.domain.entity.NotificationEntity</class> 
+        <class>com.helpdesk.domain.entity.NotificationInfoEntity</class> 
     </persistence-unit>
 </persistence>

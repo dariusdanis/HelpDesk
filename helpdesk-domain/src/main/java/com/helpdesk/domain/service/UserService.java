@@ -1,5 +1,7 @@
 package com.helpdesk.domain.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,4 +24,11 @@ public class UserService {
 	public void merge(UserEntity userEntity) {
 		userDao.merge(userEntity);
 	}
+	
+	@Transactional
+	public List<UserEntity> findAllByRole(String role) {
+		return userDao.findAllByRole(role);
+	}
+	
+	
 }

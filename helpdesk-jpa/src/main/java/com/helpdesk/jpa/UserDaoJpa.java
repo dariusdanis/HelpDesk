@@ -1,5 +1,7 @@
 package com.helpdesk.jpa;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -31,6 +33,14 @@ public class UserDaoJpa implements UserDao{
 	@Override
 	public void merge(UserEntity userEntity) {
 		em.merge(userEntity);
+	}
+
+	@Override
+	public List<UserEntity> findAllByRole(String role) {
+		TypedQuery<UserEntity> query = em.createQuery(
+				"SELECT u FROM UserEntity u WHERE u.roleEntity.role = :role", UserEntity.class);
+	    query.setParameter("role", role);
+		return query.getResultList();
 	}
 	
 	

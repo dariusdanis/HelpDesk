@@ -50,14 +50,14 @@ public class SingInPage extends WebPage {
             
             @Override
             public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-            	if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
-            		if (((HelpDeskSession) getSession()).signIn(email, password)) {
-            			setResponsePage(HomePage.class);
-            		}	
-            	}
-            	info("Try again");
-            	target.add(feedbackPanel);
-            	target.appendJavaScript("showErrors();");
+        	 if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
+                 if (((HelpDeskSession) getSession()).signIn(email, password)) {
+                         setResponsePage(HomePage.class);
+                 }        
+             }
+             info("Try again");
+             target.add(feedbackPanel);
+             target.appendJavaScript("showErrors();");
             }
         };
 	}

@@ -119,6 +119,12 @@
 			<artifactId>wicket-auth-roles</artifactId>
 			<version>6.11.0</version>
 		</dependency>
+		<dependency>
+		    <groupId>org.apache.wicket</groupId>
+		    <artifactId>wicket-native-websocket-jetty</artifactId>
+		    <version>0.12</version>
+		    <scope>provided</scope>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>

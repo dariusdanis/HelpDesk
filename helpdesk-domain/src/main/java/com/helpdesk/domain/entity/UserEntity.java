@@ -29,6 +29,9 @@ public class UserEntity {
     @OneToMany(targetEntity = RequestEntity.class, cascade = CascadeType.ALL, mappedBy = "userEntity")
     private List<RequestEntity> requestEntity;
     
+    @OneToMany(targetEntity = NotificationEntity.class, cascade = CascadeType.ALL, mappedBy = "userEntity")
+    private List<NotificationEntity> notifications;
+    
 	public UserEntity() {}
 	
 	public int getId() {
@@ -93,6 +96,14 @@ public class UserEntity {
 
 	public void setRequestEntity(List<RequestEntity> requestEntity) {
 		this.requestEntity = requestEntity;
+	}
+
+	public List<NotificationEntity> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<NotificationEntity> notifications) {
+		this.notifications = notifications;
 	}
 
 }

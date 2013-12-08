@@ -1587,7 +1587,7 @@
 
 			// create the css arrow pointing at the field
 			// note that there is no triangle on max-checkbox and radio
-			if (options.showArrow) {
+			if (!options.showArrow) {
 				var arrow = $('<div>').addClass("formErrorArrow");
 
 				//prompt positioning adjustment support. Usage: positionType:Xshift,Yshift (for ex.: bottomLeft:+20 or bottomLeft:-20,+10)
@@ -1597,8 +1597,9 @@
 					if(pos!=-1)
 						positionType=positionType.substring(0,pos);
 				}
-
-				switch (positionType) {
+				arrow.html('<div class="line10"><!-- --></div><div class="line9"><!-- --></div><div class="line8"><!-- --></div><div class="line7"><!-- --></div><div class="line6"><!-- --></div><div class="line5"><!-- --></div><div class="line4"><!-- --></div><div class="line3"><!-- --></div><div class="line2"><!-- --></div><div class="line1"><!-- --></div>');
+				prompt.append(arrow);
+				/*switch (positionType) {
 					case "bottomLeft":
 					case "bottomRight":
 						prompt.find(".formErrorContent").before(arrow);
@@ -1606,10 +1607,9 @@
 						break;
 					case "topLeft":
 					case "topRight":
-						arrow.html('<div class="line10"><!-- --></div><div class="line9"><!-- --></div><div class="line8"><!-- --></div><div class="line7"><!-- --></div><div class="line6"><!-- --></div><div class="line5"><!-- --></div><div class="line4"><!-- --></div><div class="line3"><!-- --></div><div class="line2"><!-- --></div><div class="line1"><!-- --></div>');
-						prompt.append(arrow);
+						
 						break;
-				}
+				}*/
 			}
 			// Add custom prompt class
 			if (options.addPromptClass)

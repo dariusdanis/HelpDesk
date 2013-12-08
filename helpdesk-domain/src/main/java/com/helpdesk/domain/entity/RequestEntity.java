@@ -1,14 +1,17 @@
 package com.helpdesk.domain.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,6 +30,9 @@ public class RequestEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date requestDate;
 
+    @Column(nullable = false)
+    private String summary;
+    
     @ManyToOne
     @JoinColumn(name = "typeFk")
     private TypeEntity typeEntity;
@@ -34,6 +40,9 @@ public class RequestEntity {
     @ManyToOne
     @JoinColumn(name = "userFk")
     private UserEntity userEntity;
+    
+	@OneToMany(targetEntity = NotificationEntity.class, mappedBy = "requestEntity", fetch = FetchType.LAZY)
+	private List<NotificationEntity> notificationEntities;
     
     public RequestEntity() {
 	}
@@ -77,5 +86,22 @@ public class RequestEntity {
 	public void setUserEntity(UserEntity userEntity) {
 		this.userEntity = userEntity;
 	}
-    
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public List<NotificationEntity> getNotificationEntities() {
+		return notificationEntities;
+	}
+
+	public void setNotificationEntities(
+			List<NotificationEntity> notificationEntities) {
+		this.notificationEntities = notificationEntities;
+	}
+
 }

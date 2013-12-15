@@ -22,9 +22,16 @@ public class RequestEntity {
 	@GeneratedValue
 	private int id;
 	
+	@Column(nullable=false)
+	private String status;
+	
 	@Lob
 	@Column(nullable = false, columnDefinition="TEXT", length=9000)
 	private String requestText;
+	
+	@Lob
+	@Column(columnDefinition="TEXT", length=9000)
+	private String requestSolution;
 	
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,15 +45,38 @@ public class RequestEntity {
     private TypeEntity typeEntity;
     
     @ManyToOne
-    @JoinColumn(name = "userFk")
-    private UserEntity userEntity;
+    @JoinColumn(name = "creatorFk")
+    private UserEntity creatorEntity;
+    
+    @ManyToOne
+    @JoinColumn(name = "engineerFk")
+    private UserEntity engineerEntity;
+    
+    @ManyToOne
+    @JoinColumn(name = "administratorFk")
+    private UserEntity administratorEntity;
     
 	@OneToMany(targetEntity = NotificationEntity.class, mappedBy = "requestEntity", fetch = FetchType.LAZY)
 	private List<NotificationEntity> notificationEntities;
+	
+    @ManyToOne
+    @JoinColumn(name = "facilityFk")
+	private FacilityEntity facilityEntity;
+	
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date solveDate;
     
+	@Lob
+	@Column(columnDefinition="TEXT", length=9000)
+    private String whatWasDone;
+    
+	private String receiptMethod;
+	private String timeSpend;
+	private Integer parentRequsetId;
+	
     public RequestEntity() {
 	}
-
+    
 	public int getId() {
 		return id;
 	}
@@ -79,14 +109,6 @@ public class RequestEntity {
 		this.typeEntity = typeEntity;
 	}
 
-	public UserEntity getUserEntity() {
-		return userEntity;
-	}
-
-	public void setUserEntity(UserEntity userEntity) {
-		this.userEntity = userEntity;
-	}
-
 	public String getSummary() {
 		return summary;
 	}
@@ -104,4 +126,97 @@ public class RequestEntity {
 		this.notificationEntities = notificationEntities;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public UserEntity getCreatorEntity() {
+		return creatorEntity;
+	}
+
+	public void setCreatorEntity(UserEntity creatorEntity) {
+		this.creatorEntity = creatorEntity;
+	}
+
+	public UserEntity getEngineerEntity() {
+		return engineerEntity;
+	}
+
+	public void setEngineerEntity(UserEntity engineerEntity) {
+		this.engineerEntity = engineerEntity;
+	}
+
+	public UserEntity getAdministratorEntity() {
+		return administratorEntity;
+	}
+
+	public void setAdministratorEntity(UserEntity administratorEntity) {
+		this.administratorEntity = administratorEntity;
+	}
+
+	public Integer getParentRequsetId() {
+		return parentRequsetId == null ? new Integer(0) : parentRequsetId;
+	}
+
+	public void setParentRequsetId(RequestEntity requestEntity) {
+		this.parentRequsetId = new Integer(requestEntity.getId()); 
+	}	
+	
+	public String getRequestSolution() {
+		return requestSolution;
+	}
+
+	public void setRequestSolution(String requestSolution) {
+		this.requestSolution = requestSolution;
+	}
+	
+	public FacilityEntity getFacilityEntity() {
+		return facilityEntity;
+	}
+
+	public void setFacilityEntity(FacilityEntity facilityEntity) {
+		this.facilityEntity = facilityEntity;
+	}
+
+	public String getWhatWasDone() {
+		return whatWasDone;
+	}
+
+	public void setWhatWasDone(String whatWasDone) {
+		this.whatWasDone = whatWasDone;
+	}
+
+	public String getTimeSpend() {
+		return timeSpend;
+	}
+
+	public void setTimeSpend(String timeSpend) {
+		this.timeSpend = timeSpend;
+	}
+	
+	public Date getSolveDate() {
+		return solveDate;
+	}
+
+	public void setSolveDate(Date solveDate) {
+		this.solveDate = solveDate;
+	}
+	
+	public String getReceiptMethod() {
+		return receiptMethod;
+	}
+
+	public void setReceiptMethod(String receiptMethod) {
+		this.receiptMethod = receiptMethod;
+	}
+
+	@Override
+	public String toString() {
+		return String.valueOf(id);
+	}
+	
 }

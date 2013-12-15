@@ -2,8 +2,8 @@ package com.helpdesk.domain.entity;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -19,17 +19,27 @@ public class UserEntity {
 	private String name;
 	private String surname;
 	private String email;
-	private Long phone;
+	private String phone;
 	private String password;
+	
+	@ManyToOne
+	@JoinColumn(name = "companyFk")
+	private CompanyEntity companyEntity;
 	
     @ManyToOne
     @JoinColumn(name = "roleFk")
 	private RoleEntity roleEntity;
 	
-    @OneToMany(targetEntity = RequestEntity.class, cascade = CascadeType.ALL, mappedBy = "userEntity")
-    private List<RequestEntity> requestEntity;
+    @OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "creatorEntity")
+    private List<RequestEntity> creatorEntity;
     
-    @OneToMany(targetEntity = NotificationEntity.class, cascade = CascadeType.ALL, mappedBy = "userEntity")
+    @OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "engineerEntity")
+    private List<RequestEntity> engineerEntity;
+    
+    @OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "administratorEntity")
+    private List<RequestEntity> administratorEntity;
+    
+    @OneToMany(targetEntity = NotificationEntity.class, fetch=FetchType.LAZY, mappedBy = "userEntity")
     private List<NotificationEntity> notifications;
     
 	public UserEntity() {}
@@ -41,7 +51,7 @@ public class UserEntity {
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getEmail() {
 		return email;
 	}
@@ -82,22 +92,6 @@ public class UserEntity {
 		this.roleEntity = roleEntity;
 	}
 
-	public Long getPhone() {
-		return phone;
-	}
-
-	public void setPhone(Long phone) {
-		this.phone = phone;
-	}
-
-	public List<RequestEntity> getRequestEntity() {
-		return requestEntity;
-	}
-
-	public void setRequestEntity(List<RequestEntity> requestEntity) {
-		this.requestEntity = requestEntity;
-	}
-
 	public List<NotificationEntity> getNotifications() {
 		return notifications;
 	}
@@ -106,4 +100,60 @@ public class UserEntity {
 		this.notifications = notifications;
 	}
 
+	public List<RequestEntity> getCreatorEntity() {
+		return creatorEntity;
+	}
+
+	public void setCreatorEntity(List<RequestEntity> creatorEntity) {
+		this.creatorEntity = creatorEntity;
+	}
+
+	public List<RequestEntity> getEngineerEntity() {
+		return engineerEntity;
+	}
+
+	public void setEngineerEntity(List<RequestEntity> engineerEntity) {
+		this.engineerEntity = engineerEntity;
+	}
+
+	public List<RequestEntity> getAdministratorEntity() {
+		return administratorEntity;
+	}
+
+	public void setAdministratorEntity(List<RequestEntity> administratorEntity) {
+		this.administratorEntity = administratorEntity;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	
+	public CompanyEntity getCompanyEntity() {
+		return companyEntity;
+	}
+
+	public void setCompanyEntity(CompanyEntity companyEntity) {
+		this.companyEntity = companyEntity;
+	}
+
+	@Override
+	public String toString() {
+		return name + " " + surname;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj instanceof UserEntity) {
+			if (((UserEntity)obj).getId() == this.id) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 }

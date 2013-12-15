@@ -1,8 +1,12 @@
 package com.helpdesk.domain.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class CompanyEntity {
@@ -12,7 +16,12 @@ public class CompanyEntity {
 	private int id;
 	private String comapanyName;
 	private String companyAddress;
-	private UserEntity user;
+	
+	@OneToMany(targetEntity = UserEntity.class, fetch=FetchType.LAZY, mappedBy = "companyEntity")
+	private List<UserEntity> users;
+	
+	@OneToMany(targetEntity = CompanyFacilityEntity.class, fetch=FetchType.LAZY, mappedBy = "facilityEntity")
+	private List<CompanyFacilityEntity> facilities;
 	
 	public int getId() {
 		return id;
@@ -37,12 +46,26 @@ public class CompanyEntity {
 	public void setCompanyAddress(String companyAddress) {
 		this.companyAddress = companyAddress;
 	}
-	
-	public UserEntity getUser() {
-		return user;
+
+	public List<UserEntity> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<UserEntity> users) {
+		this.users = users;
 	}
 	
-	public void setUser(UserEntity user) {
-		this.user = user;
+	public List<CompanyFacilityEntity> getFacilities() {
+		return facilities;
 	}
+
+	public void setFacilities(List<CompanyFacilityEntity> facilities) {
+		this.facilities = facilities;
+	}
+
+	@Override
+	public String toString() {
+		return comapanyName;
+	}
+	
 }

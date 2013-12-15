@@ -25,6 +25,11 @@ public class NotificationService {
 	}
 	
 	@Transactional
+	public List<NotificationEntity> getNotificationByUser(UserEntity userEntity) {
+		return notificationDao.getNotificationByUser(userEntity);
+	}
+	
+	@Transactional
 	public void merge(RequestEntity requestEntity, List<UserEntity> userEntity, String message) {
 		NotificationEntity notificationEntity = new NotificationEntity();
 		NotificationInfoEntity infoEntity = new NotificationInfoEntity(message, new Date());
@@ -35,7 +40,10 @@ public class NotificationService {
 			notificationEntity.setUserEntity(u);
 			notificationDao.merge(notificationEntity);
 		}
-		
 	}
-
+	@Transactional
+	public void remove(NotificationEntity notificationEntity){
+		notificationDao.remove(notificationEntity);
+	}
+	
 }

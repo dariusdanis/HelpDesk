@@ -22,6 +22,10 @@ public class SingInPage extends WebPage {
 	@Override
 	protected void onInitialize() {
 		super.onInitialize();
+		if (((HelpDeskSession)getSession()).isSignedIn()) {
+			setResponsePage(HomePage.class);
+			return;
+		}
 		Form<?> loginForm = new Form<Void>("loginForm");
 		FeedbackPanel feedbackPanel = new FeedbackPanel("feedback");
 		feedbackPanel.setOutputMarkupId(true);

@@ -403,7 +403,7 @@ disabled look for already selected choices in the results dropdown
   padding: 0;
 }
 
-.select2-container-multi .select2-choices .select2-search-field input {
+.select2-container-multi .select2-choices .select2-search-field input { 	
   color: #666;
   background: transparent !important;
   font-size: 100%;

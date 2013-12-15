@@ -9,6 +9,10 @@
         <class>com.helpdesk.domain.entity.RequestEntity</class>
         <class>com.helpdesk.domain.entity.TypeEntity</class>
         <class>com.helpdesk.domain.entity.NotificationEntity</class> 
-        <class>com.helpdesk.domain.entity.NotificationInfoEntity</class> 
+        <class>com.helpdesk.domain.entity.NotificationInfoEntity</class>
+        <class>com.helpdesk.domain.entity.CompanyEntity</class>  
+        <class>com.helpdesk.domain.entity.FacilityEntity</class>  
+        <class>com.helpdesk.domain.entity.CompanyFacilityEntity</class>  
+        
     </persistence-unit>
 </persistence>

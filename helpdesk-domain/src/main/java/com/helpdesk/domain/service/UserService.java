@@ -30,5 +30,11 @@ public class UserService {
 		return userDao.findAllByRole(role);
 	}
 	
+	@Transactional
+	public List<UserEntity> findAllByRole(String role, String secondRole) {
+		List<UserEntity> entities = userDao.findAllByRole(role);
+		entities.addAll(userDao.findAllByRole(secondRole));
+		return entities;
+	}
 	
 }

@@ -107,3 +107,10 @@ textarea {
     max-width: 576px;
     min-width: 576px;
 }
+
+.was-done {
+    min-height: 120px !important; 
+    max-height: 120px !important;
+    max-width: 380px;
+    min-width: 380px;
+}

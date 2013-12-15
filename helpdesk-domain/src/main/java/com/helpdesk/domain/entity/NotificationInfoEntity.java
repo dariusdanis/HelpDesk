@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -25,8 +24,7 @@ public class NotificationInfoEntity {
     @Temporal(TemporalType.TIMESTAMP)
 	private Date date;
     
-    @OneToOne
-    @PrimaryKeyJoinColumn
+    @OneToOne(mappedBy="infoEntity")
     private NotificationEntity notificationEntity;
 	
     public NotificationInfoEntity() {
@@ -36,8 +34,6 @@ public class NotificationInfoEntity {
 		this.notificationText = notificationText;
 		this.date = date;
 	}
-
-
 
 	public int getId() {
 		return id;

@@ -2,6 +2,7 @@ package com.helpdesk.domain.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -23,7 +24,8 @@ public class NotificationEntity {
     @JoinColumn(name = "requestFk")
 	private RequestEntity requestEntity;
 	
-    @OneToOne(mappedBy="notificationEntity", cascade=CascadeType.ALL)
+    @OneToOne(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+    @JoinColumn(name="infoId")
     private NotificationInfoEntity infoEntity;
     
 	public NotificationEntity() {

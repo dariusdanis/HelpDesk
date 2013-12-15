@@ -101,7 +101,7 @@ public class RequestPage extends BasePage {
 			}
 		};
 		container.add(ajaxSubmitLink);
-		container.setVisible(!client() && !admin());
+		container.setVisible(assingToLoggedUser());
 		return container;
 	}
 
@@ -204,7 +204,7 @@ public class RequestPage extends BasePage {
 		WebMarkupContainer container = new WebMarkupContainer(wicketId);
 		container.add(initWountSolveLink());
 		container.add(initBackToAdminLink());
-		container.setVisible(engineer() || director());
+		container.setVisible(assingToLoggedUser());
 		return container;
 	}
 
@@ -319,6 +319,17 @@ public class RequestPage extends BasePage {
 		choice.setVisible(false);
 		choice.setOutputMarkupId(true);
 		return choice;
+	}
+	
+	private boolean assingToLoggedUser() {
+		if (requestEntity.getEngineerEntity() == null) {
+			return false;
+		} else if (!requestEntity.getStatus().equals(Constants.Status.ASSIGNED.toString())) {
+			return false;
+		} else if (requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) {		
+			return true;
+		}
+		return false;
 	}
 	
 }

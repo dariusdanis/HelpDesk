@@ -69,6 +69,10 @@ public class RequestPage extends BasePage {
 				return;
 			}
 		}
+		if (requestEntity == null) {
+			setResponsePage(HomePage.class);
+			return;
+		}
 		add(initReadOnlyInput("client", getClientInfo(requestEntity)));
 		add(initReadOnlyInput("summary", requestEntity.getSummary()));
 		add(initReadOnlyInput("date", requestEntity.getRequestDate().toString()));
@@ -101,7 +105,7 @@ public class RequestPage extends BasePage {
 			}
 		};
 		container.add(ajaxSubmitLink);
-		container.setVisible(assingToLoggedUser());
+		container.setVisible(assingedToLoggedUser());
 		return container;
 	}
 
@@ -204,7 +208,7 @@ public class RequestPage extends BasePage {
 		WebMarkupContainer container = new WebMarkupContainer(wicketId);
 		container.add(initWountSolveLink());
 		container.add(initBackToAdminLink());
-		container.setVisible(assingToLoggedUser());
+		container.setVisible(assingedToLoggedUser());
 		return container;
 	}
 
@@ -224,7 +228,13 @@ public class RequestPage extends BasePage {
 			}
 		};
 		
-		link.setVisible(engineer());
+		if (engineer() || (director() && requestEntity.getAdministratorEntity() != null 
+				&& requestEntity.getAdministratorEntity().getId() != getLoggedUser().getId())) {
+			link.setVisible(true);
+		} else {
+			link.setVisible(false);
+		}
+		
 		return link;
 	}
 
@@ -244,7 +254,7 @@ public class RequestPage extends BasePage {
 			
 		};
 		
-		link.setVisible(engineer());
+		link.setVisible(engineer() || director());
 		return link;
 	}
 	
@@ -263,8 +273,17 @@ public class RequestPage extends BasePage {
 				readOnlyTextField.setVisible(false);
 			}
 		} else {
-			choice = initFakeDropDown("engineerSelect");
-			readOnlyTextField = initReadOnlyInput("engineer", requestEntity.getEngineerEntity().toString());
+			if (director() && requestEntity.getStatus().equals(Constants.Status.ASSIGNED.toString())
+					|| requestEntity.getStatus().equals(Constants.Status.NOT_ASSIGNED.toString())) {
+				userEntity = requestEntity.getEngineerEntity();
+				choice = initTypeDropDown("engineerSelect", userService.findAllByRole(Constants.Roles.ENGIN.toString(), 
+						Constants.Roles.DIREC.toString()), "userEntity", requestEntity, container);
+				readOnlyTextField = initReadOnlyInput("engineer", "-");
+				readOnlyTextField.setVisibilityAllowed(false);
+			} else {
+				choice = initFakeDropDown("engineerSelect");
+				readOnlyTextField = initReadOnlyInput("engineer", requestEntity.getEngineerEntity().toString());
+			}
 		}
 		readOnlyTextField.setOutputMarkupId(true);
 		container.add(choice);
@@ -299,17 +318,23 @@ public class RequestPage extends BasePage {
 			    protected void onUpdate(AjaxRequestTarget target) {
 					entity.setEngineerEntity(userEntity);
 					entity.setAdministratorEntity(((HelpDeskSession)getSession()).getUser());
-					entity.setStatus(Constants.Status.ASSIGNED.toString());
+					if (userEntity != null) {
+						entity.setStatus(Constants.Status.ASSIGNED.toString());
+						notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{userEntity}), Constants.NEW_ASSIGMENT);
+						sendToUser(userEntity);
+					} else {
+						entity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
+					}
 					requestService.merge(entity);
-					notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{userEntity}), Constants.NEW_ASSIGMENT);
-					sendToUser(userEntity);
-					container.removeAll();
-					TextField<String> field = initReadOnlyInput("engineer", userEntity.toString());
-					field.setOutputMarkupId(true);
-					container.add(initFakeDropDown("engineerSelect"));
-					container.add(field);
-					target.add(container);
-			    }
+					if (!director()) {
+						container.removeAll();
+						TextField<String> field = initReadOnlyInput("engineer", userEntity.toString());
+						field.setOutputMarkupId(true);
+						container.add(initFakeDropDown("engineerSelect"));
+						container.add(field);
+						target.add(container);
+					}
+			}
 			
 		};
 	}
@@ -321,7 +346,7 @@ public class RequestPage extends BasePage {
 		return choice;
 	}
 	
-	private boolean assingToLoggedUser() {
+	private boolean assingedToLoggedUser() {
 		if (requestEntity.getEngineerEntity() == null) {
 			return false;
 		} else if (!requestEntity.getStatus().equals(Constants.Status.ASSIGNED.toString())) {

@@ -34,6 +34,7 @@ import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
 import com.helpdesk.ui.user.AddUserPage;
 import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.Constants;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
@@ -56,7 +57,7 @@ public class BasePage extends WebPage {
 		String javaScript = "Wicket.Event.subscribe('/websocket/message', function(jqEvent, counter) {" +
 				"updateNotificationCounter(jqEvent, counter);" +
 				"});";
-		response.render( OnLoadHeaderItem.forScript( javaScript));
+		response.render(OnLoadHeaderItem.forScript(javaScript));
 	}
 	
 	@Override
@@ -69,16 +70,22 @@ public class BasePage extends WebPage {
 		WebMarkupContainer notificationConteiner = new WebMarkupContainer("notificationConteiner");
 		notificationConteiner.add(notificationItems);
 		notificationConteiner.setOutputMarkupId(true);
-
+		
 		RepeatingView menuItems = new RepeatingView("menuItems");
+		menuItems.add(initLink(menuItems.newChildId(), ProfilePage.class, "My Profile"));
 		menuItems.add(initLink(menuItems.newChildId(), AddUserPage.class, "Add Employee"));
 		menuItems.add(initLink(menuItems.newChildId(), AddRequestPage.class, "Create Request"));
+		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
 		add(initLogOffLink("logOff"));
 		add(menuItems);
 		add(initWebSocket());
 		add(notificationConteiner);
+	}
+
+	private Label initNotificationCounter(String wicketId) {
+		return new Label(wicketId, notificationService.getCount(getLoggedUser()));
 	}
 
 	private AjaxLink<Object> initNotificationsLink(String wicketId, final RepeatingView notificationItems, 
@@ -284,6 +291,10 @@ public class BasePage extends WebPage {
 	public void appendJavaScript(AjaxRequestTarget target,  Form<?> form, Object index, Object message) {
 		target.appendJavaScript("appendError('"+ form.get((Integer) index).getMarkupId() 
 				+"','"+message.toString()+"');");
+	}
+	
+	public HelpDeskSession getHDSession() {
+		return ((HelpDeskSession) getSession());
 	}
 	
 	public boolean client() {

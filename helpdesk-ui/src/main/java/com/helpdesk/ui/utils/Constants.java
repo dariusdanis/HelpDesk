@@ -5,8 +5,8 @@ import java.util.List;
 
 public class Constants {
 
-	public static enum Status {NOT_ASSIGNED, WONT_SOLVE, SOLVED, ASSIGNED};
-	public static enum Roles {ADMIN, CLIEN, ENGIN, DIREC};
+	public static enum Status {NOT_ASSIGNED, WONT_SOLVE, SOLVED, ASSIGNED}
+	public static enum Roles {ADMIN, CLIEN, ENGIN, DIREC}
 	public static enum ReceiptMethod {EMAIL, PHONE, SELF_SERVICE}
 	public static enum FilterOptions {CURRENT, HISTORY}
 	

@@ -42,7 +42,7 @@ public class AddUserPage extends BasePage {
 		if (!isSingIn()) {
 			setResponsePage(SingInPage.class);
 			return;
-		} else if (!admin()) {
+		} else if (!director()) {
 			setResponsePage(HomePage.class);
 			return;
 		}

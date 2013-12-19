@@ -22,6 +22,8 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 	private UserService userService;
 	private UserEntity user;
 	
+	private String homePageStatus;
+	
 	public HelpDeskSession(Request request) {
 		super(request);
 		Injector.get().inject(this);
@@ -74,5 +76,13 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 	public static void setHelpDeskSessions(List<HelpDeskSession> helpDeskSessions) {
 		HelpDeskSession.helpDeskSessions = helpDeskSessions;
 	}
-	
+
+	public String getHomePageStatus() {
+		return homePageStatus;
+	}
+
+	public void setHomePageStatus(String homePageStatus) {
+		this.homePageStatus = homePageStatus;
+	}
+
 }

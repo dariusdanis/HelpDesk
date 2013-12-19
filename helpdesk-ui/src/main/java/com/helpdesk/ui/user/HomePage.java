@@ -7,6 +7,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.PropertyModel;
@@ -19,6 +20,7 @@ import com.helpdesk.domain.service.TypeService;
 import com.helpdesk.domain.service.UserService;
 import com.helpdesk.ui.BasePage;
 import com.helpdesk.ui.SingInPage;
+import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.utils.Constants;
 
 public class HomePage extends BasePage {
@@ -42,11 +44,24 @@ public class HomePage extends BasePage {
 			setResponsePage(SingInPage.class);
 			return;
 		}
+		filterOption = getHDSession().getHomePageStatus();
 		WebMarkupContainer container = initRequsetConteiner("requsetConteiner");
 		ListView<RequestEntity> listView = initRequestTable("repeatingView", getRequestList());
 		add(initFilterOptions("filterOptions", Constants.filterOptions, "filterOption", container, listView));
+		add(initReauestLink("requestLink"));
 		container.add(listView);
 		add(container);
+	}
+
+	private Link<Object> initReauestLink(String wicketId) {
+		return new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AddRequestPage.class);
+			}
+		};
 	}
 
 	private WebMarkupContainer initRequsetConteiner(String wicketId) {
@@ -95,12 +110,11 @@ public class HomePage extends BasePage {
 
 			@Override
 			    protected void onUpdate(AjaxRequestTarget target) {
+					getHDSession().setHomePageStatus(filterOption);
 					if (filterOption.equals(Constants.FilterOptions.HISTORY.toString().toLowerCase())) {
 						listView.removeAll();
 						container.removeAll();
-						container.add(initRequestTable("repeatingView", 
-								requestService.getAllByEngineerAndNotStatus(getLoggedUser(), 
-										Constants.Status.ASSIGNED.toString())));
+						container.add(initRequestTable("repeatingView", getRequestList()));
 						target.add(container);
 					} else if (filterOption.equals(Constants.FilterOptions.CURRENT.toString().toLowerCase())) {
 						listView.removeAll();
@@ -108,7 +122,8 @@ public class HomePage extends BasePage {
 						container.add(initRequestTable("repeatingView", getRequestList()));
 						target.add(container);
 					}
-			    }
+					
+			}
 			
 		};
 	}
@@ -120,7 +135,12 @@ public class HomePage extends BasePage {
 		case "CLIEN":
 			return requestService.getAllByCreator(getLoggedUser());
 		case "ENGIN":
-			return requestService.getAllByEngineerAndStatus(getLoggedUser(), Constants.Status.ASSIGNED.toString());
+			if (getHDSession().getHomePageStatus() != null 
+				&& getHDSession().getHomePageStatus().equals(Constants.FilterOptions.HISTORY.toString().toLowerCase())) {
+				return requestService.getAllByEngineerAndNotStatus(getLoggedUser(), Constants.Status.ASSIGNED.toString());
+			} else {
+				return requestService.getAllByEngineerAndStatus(getLoggedUser(), Constants.Status.ASSIGNED.toString());
+			}
 		case "DIREC":
 			return requestService.getAll();
 		}

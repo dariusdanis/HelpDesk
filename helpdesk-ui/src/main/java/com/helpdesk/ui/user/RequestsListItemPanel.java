@@ -35,7 +35,7 @@ public class RequestsListItemPanel extends Panel {
 		add(new Label("type", requestEntity.getTypeEntity().getType()));
 		add(new Label("assigned", requestEntity.getEngineerEntity() == null ? "-" : 
 			requestEntity.getEngineerEntity().toString()));
-		add(new Label("status", "test"));
+		add(new Label("status", requestEntity.getStatus()));
 	
 	}
 	

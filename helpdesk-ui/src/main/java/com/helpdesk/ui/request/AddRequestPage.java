@@ -59,10 +59,10 @@ public class AddRequestPage extends BasePage {
 				getLoggedUser().getCompanyEntity(), 
 				getLoggedUser().getCompanyEntity().getComapanyName().equals(Constants.HPCompany)),
 				"requestEntity.facilityEntity"));
-		form.add(initParentDropDown("parent", requestService.getAllByCreator(getLoggedUser()), 
+		form.add(initParentDropDown("parent", requestService.getAllByCreatOrBelongsTo(getLoggedUser()), 
 				"requestEntity.parentRequsetId"));
 		form.add(initClientDropDown("client", userService.findAllByRole(Constants.Roles.CLIEN.toString()), 
-				"requestEntity.creatorEntity"));
+				"requestEntity.requestBelongsTo"));
 		form.add(initReceiptDropDown("receipt", Constants.receiptMethodsList, "requestEntity.receiptMethod"));
 		add(form);
 	}
@@ -81,7 +81,11 @@ public class AddRequestPage extends BasePage {
 				if (validationError != null) {
 					appendJavaScript(target, form, validationError.get(0), validationError.get(1));
 				} else {
-					if (!client()) {
+					requestEntity.setCreatorEntity(getLoggedUser());
+					if (client()) {
+						requestEntity.setReceiptMethod(Constants.ReceiptMethod.SELF_SERVICE.toString());
+						requestEntity.setRequestBelongsTo(getLoggedUser());
+					} else {
 						if (requestEntity.getCreatorEntity() == null) {
 							appendJavaScript(target, form, 5, Constants.REQUED);
 							return;
@@ -89,9 +93,6 @@ public class AddRequestPage extends BasePage {
 							appendJavaScript(target, form, 6, Constants.REQUED);
 							return;
 						}
-					} else {
-						requestEntity.setCreatorEntity(getLoggedUser());
-						requestEntity.setReceiptMethod(Constants.ReceiptMethod.SELF_SERVICE.toString());
 					}
 					requestEntity.setRequestDate(new Date());
 					requestEntity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
@@ -150,7 +151,7 @@ public class AddRequestPage extends BasePage {
 		};
 		types.setOutputMarkupId(true);
 		clientConteiner.add(types);
-		clientConteiner.setVisible(admin());
+		clientConteiner.setVisible(director() || admin());
 		return clientConteiner;
 	}
 	
@@ -183,7 +184,7 @@ public class AddRequestPage extends BasePage {
 		};
 		types.setOutputMarkupId(true);
 		receiptConteiner.add(types);
-		receiptConteiner.setVisible(admin());
+		receiptConteiner.setVisible(director() || admin());
 		return receiptConteiner;
 	}
 	

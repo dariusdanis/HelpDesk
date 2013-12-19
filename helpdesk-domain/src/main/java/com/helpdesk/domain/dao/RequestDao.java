@@ -11,7 +11,7 @@ public interface RequestDao {
 	
 	List<RequestEntity> getAll();
 	
-	List<RequestEntity> getAllByCreator(UserEntity userEntity);
+	List<RequestEntity> getAllByCreatOrBelongsTo(UserEntity userEntity);
 
 	List<RequestEntity> getAllUnassigned();
 	

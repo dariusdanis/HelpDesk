@@ -133,7 +133,7 @@ public class HomePage extends BasePage {
 		case "ADMIN":
 			return requestService.getAllUnassignedAndStatus(Constants.Status.NOT_ASSIGNED.toString());
 		case "CLIEN":
-			return requestService.getAllByCreator(getLoggedUser());
+			return requestService.getAllByCreatOrBelongsTo(getLoggedUser());
 		case "ENGIN":
 			if (getHDSession().getHomePageStatus() != null 
 				&& getHDSession().getHomePageStatus().equals(Constants.FilterOptions.HISTORY.toString().toLowerCase())) {

@@ -158,11 +158,11 @@ public class BasePage extends WebPage {
 		};
 	}
 
-	public void sendToUser(UserEntity userEntity) {
+	public void sendToUser(UserEntity userEntity, String message) {
 		IWebSocketConnection connection = getConnection(userEntity);
 		if (connection != null && connection.isOpen()) {
 			try {
-				connection.sendMessage(messages.get(0));
+				connection.sendMessage(message);
 			} catch (IOException e) {}
 		}
 	}

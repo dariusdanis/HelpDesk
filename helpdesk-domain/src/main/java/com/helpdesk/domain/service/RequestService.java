@@ -27,8 +27,8 @@ public class RequestService {
 	}
 	
 	@Transactional
-	public List<RequestEntity> getAllByCreator(UserEntity userEntity) {
-		return requsetDao.getAllByCreator(userEntity);
+	public List<RequestEntity> getAllByCreatOrBelongsTo(UserEntity userEntity) {
+		return requsetDao.getAllByCreatOrBelongsTo(userEntity);
 	}
 
 	@Transactional

@@ -31,9 +31,9 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByCreator(UserEntity userEntity) {
+	public List<RequestEntity> getAllByCreatOrBelongsTo(UserEntity userEntity) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				"r.creatorEntity.id = :id", RequestEntity.class);
+				"r.creatorEntity.id = :id or r.requestBelongsTo.id = :id", RequestEntity.class);
 		query.setParameter("id", userEntity.getId());
 		return query.getResultList();
 	}

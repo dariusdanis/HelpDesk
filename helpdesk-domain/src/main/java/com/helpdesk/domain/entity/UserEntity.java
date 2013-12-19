@@ -21,6 +21,8 @@ public class UserEntity {
 	private String email;
 	private String phone;
 	private String password;
+	private boolean active;
+	
 	
 	@ManyToOne
 	@JoinColumn(name = "companyFk")
@@ -41,6 +43,9 @@ public class UserEntity {
     
     @OneToMany(targetEntity = NotificationEntity.class, fetch=FetchType.LAZY, mappedBy = "userEntity")
     private List<NotificationEntity> notifications;
+    
+    @OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "requestBelongsTo")
+    private List<RequestEntity> belongsTo;
     
 	public UserEntity() {}
 	
@@ -145,6 +150,14 @@ public class UserEntity {
 		return name + " " + surname;
 	}
 	
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj == null) return false;

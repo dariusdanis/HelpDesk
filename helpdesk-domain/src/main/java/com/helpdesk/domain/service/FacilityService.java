@@ -25,8 +25,8 @@ public class FacilityService {
 	}
 	
 	@Transactional
-	public FacilityEntity mege(FacilityEntity facilityEntity) {
-		return facilityDao.mege(facilityEntity);
+	public FacilityEntity merge(FacilityEntity facilityEntity) {
+		return facilityDao.merge(facilityEntity);
 	}
 	
 	@Transactional

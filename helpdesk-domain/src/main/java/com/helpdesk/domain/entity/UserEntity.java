@@ -49,6 +49,20 @@ public class UserEntity {
     
 	public UserEntity() {}
 	
+	public UserEntity(String name, String surname, String email,
+			String phone, String password, CompanyEntity companyEntity,
+			RoleEntity roleEntity) {
+		this.name = name;
+		this.surname = surname;
+		this.email = email;
+		this.phone = phone;
+		this.password = password;
+		this.companyEntity = companyEntity;
+		this.roleEntity = roleEntity;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}

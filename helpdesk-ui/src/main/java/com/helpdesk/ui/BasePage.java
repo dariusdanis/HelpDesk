@@ -296,7 +296,7 @@ public class BasePage extends WebPage {
 		Integer counter = 0;
 		for (Object obj : objects) {
 			if (obj == null) {
-				errorMessage = Constants.REQUED;
+				errorMessage = Constants.REQUIRED;
 				break;
 			} else if (obj instanceof String && (errorMessage = checkClass(obj, form, counter)) != null) {
 				break;

@@ -124,6 +124,11 @@
 		    <artifactId>wicket-native-websocket-jetty</artifactId>
 		    <version>0.12</version>
 		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.8</version>
         </dependency>
 	</dependencies>
 	<build>

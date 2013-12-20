@@ -8,10 +8,7 @@ import com.helpdesk.domain.entity.FacilityEntity;
 public interface FacilityDao {
 
 	List<FacilityEntity> getAllByCompany(CompanyEntity company);
-	
-	List<FacilityEntity> getAll();
-	
-	FacilityEntity mege(FacilityEntity facilityEntity);
-	
+	FacilityEntity merge (FacilityEntity facilityEntity);
+	List<FacilityEntity> getAll();	
 	FacilityEntity getById(int id);
 }

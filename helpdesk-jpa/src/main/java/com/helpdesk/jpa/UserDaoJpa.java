@@ -31,8 +31,8 @@ public class UserDaoJpa implements UserDao {
 	}
 
 	@Override
-	public void merge(UserEntity userEntity) {
-		em.merge(userEntity);
+	public UserEntity merge(UserEntity userEntity) {
+		return em.merge(userEntity);
 	}
 
 	@Override

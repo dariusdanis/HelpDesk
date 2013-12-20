@@ -87,10 +87,10 @@ public class AddRequestPage extends BasePage {
 						requestEntity.setRequestBelongsTo(getLoggedUser());
 					} else {
 						if (requestEntity.getCreatorEntity() == null) {
-							appendJavaScript(target, form, 5, Constants.REQUED);
+							appendJavaScript(target, form, 5, Constants.REQUIRED);
 							return;
 						} else if (requestEntity.getReceiptMethod() == null) {
-							appendJavaScript(target, form, 6, Constants.REQUED);
+							appendJavaScript(target, form, 6, Constants.REQUIRED);
 							return;
 						}
 					}

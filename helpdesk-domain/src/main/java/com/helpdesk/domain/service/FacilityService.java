@@ -23,4 +23,9 @@ public class FacilityService {
 		}
 		return facilityDao.getAllByCompany(company);
 	}
+	
+	@Transactional
+	public FacilityEntity merge(FacilityEntity facilityEntity) {
+		return facilityDao.merge(facilityEntity);
+	}
 }

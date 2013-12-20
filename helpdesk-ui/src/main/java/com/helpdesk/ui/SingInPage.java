@@ -11,6 +11,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.utils.DataImporter;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
 public class SingInPage extends WebPage {
@@ -34,6 +35,9 @@ public class SingInPage extends WebPage {
 		loginForm.add(initLoginButton("signInButton", feedbackPanel));
 		add(loginForm);
 		add(feedbackPanel);
+		
+		DataImporter data = new DataImporter();
+		data.loadData();
 	}
 	
 	private TextField<String> initEmailTextField(String wicketId) {

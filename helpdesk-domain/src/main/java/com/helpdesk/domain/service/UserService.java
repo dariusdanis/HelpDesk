@@ -21,8 +21,8 @@ public class UserService {
 	}
 	
 	@Transactional
-	public void merge(UserEntity userEntity) {
-		userDao.merge(userEntity);
+	public UserEntity merge(UserEntity userEntity) {
+		return userDao.merge(userEntity);
 	}
 	
 	@Transactional

@@ -22,16 +22,16 @@ public class RoleEntity {
 	public RoleEntity() {
 	}
 	
+	public RoleEntity(int id) {
+		this.id = id;
+	}
+	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public RoleEntity(String role) {
-		this.role = role;
 	}
 
 	public String getRole() {

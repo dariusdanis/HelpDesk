@@ -31,7 +31,8 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 
 	public boolean authenticate(String email, String password) {
 		user = userService.findByEmail(email);
-		if (user != null && user.getPassword().equals(password)) {
+		if (user != null && user.getPassword().equals(password) 
+				&& user.isActive()) {
 			helpDeskSessions.add(this);
 			return true;
 		}

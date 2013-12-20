@@ -13,7 +13,7 @@ import com.helpdesk.domain.dao.UserDao;
 import com.helpdesk.domain.entity.UserEntity;
 
 @Repository
-public class UserDaoJpa implements UserDao{
+public class UserDaoJpa implements UserDao {
 
 	@PersistenceContext
 	private EntityManager em;
@@ -41,6 +41,18 @@ public class UserDaoJpa implements UserDao{
 				"SELECT u FROM UserEntity u WHERE u.roleEntity.role = :role", UserEntity.class);
 	    query.setParameter("role", role);
 		return query.getResultList();
+	}
+
+	@Override
+	public List<UserEntity> findAll() {
+		TypedQuery<UserEntity> query = em.createQuery(
+				"SELECT u FROM UserEntity u", UserEntity.class);
+		return query.getResultList();
+	}
+
+	@Override
+	public UserEntity findById(int id) {
+		return em.find(UserEntity.class, id);
 	}
 	
 	

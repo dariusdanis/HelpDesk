@@ -23,4 +23,10 @@ public class FacilityService {
 		}
 		return facilityDao.getAllByCompany(company);
 	}
+	
+	@Transactional
+	public FacilityEntity mege(FacilityEntity facilityEntity) {
+		return facilityDao.mege(facilityEntity);
+	}
+	
 }

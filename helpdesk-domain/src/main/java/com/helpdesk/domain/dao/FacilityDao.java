@@ -10,4 +10,6 @@ public interface FacilityDao {
 	List<FacilityEntity> getAllByCompany(CompanyEntity company);
 	
 	List<FacilityEntity> getAll();
+	
+	FacilityEntity mege(FacilityEntity facilityEntity);
 }

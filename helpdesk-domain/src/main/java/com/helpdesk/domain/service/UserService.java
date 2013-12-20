@@ -36,5 +36,14 @@ public class UserService {
 		entities.addAll(userDao.findAllByRole(secondRole));
 		return entities;
 	}
+
+	@Transactional
+	public List<UserEntity> findAll() {
+		return userDao.findAll();
+	}
+
+	public UserEntity findById(int id) {
+		return userDao.findById(id);
+	}
 	
 }

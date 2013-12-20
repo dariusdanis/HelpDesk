@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -33,6 +34,7 @@ import com.helpdesk.domain.service.UserService;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
 import com.helpdesk.ui.user.AddUserPage;
+import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
 import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.Constants;
@@ -72,9 +74,10 @@ public class BasePage extends WebPage {
 		notificationConteiner.setOutputMarkupId(true);
 		
 		RepeatingView menuItems = new RepeatingView("menuItems");
-		menuItems.add(initLink(menuItems.newChildId(), ProfilePage.class, "My Profile"));
-		menuItems.add(initLink(menuItems.newChildId(), AddUserPage.class, "Add Employee"));
-		menuItems.add(initLink(menuItems.newChildId(), AddRequestPage.class, "Create Request"));
+		menuItems.add(initProfileLink(menuItems.newChildId(), "My Profile"));
+		menuItems.add(initEmployeeLink(menuItems.newChildId(), "Add User"));
+		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
+		menuItems.add(initAllUserLink(menuItems.newChildId(), "All Users"));
 		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
@@ -82,6 +85,61 @@ public class BasePage extends WebPage {
 		add(menuItems);
 		add(initWebSocket());
 		add(notificationConteiner);
+	}
+
+	private Component initAllUserLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AllUserPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initRequestLinkLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AddRequestPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisibilityAllowed(!engineer());
+		return link;
+	}
+
+	private Link<Object> initEmployeeLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AddUserPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initProfileLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(ProfilePage.class, ProfilePage.parametersWith(getLoggedUser().getId()));
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		return link;
 	}
 
 	private Label initNotificationCounter(String wicketId) {
@@ -121,21 +179,6 @@ public class BasePage extends WebPage {
 			
 		};
 		link.add(new Label("notificationLabel", notificationEntity.getInfoEntity().getNotificationText()));
-		return link;
-	}
-
-	private Link<Object> initLink(String wicketId, final Class<? extends BasePage> page, String label) {
-		Link<Object> link = new Link<Object>(wicketId) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick() {
-				setResponsePage(page);
-			}
-			
-		};
-		link.add(new Label("menuLabel", label));
-		link.setVisible(show(page));
 		return link;
 	}
 	
@@ -223,10 +266,6 @@ public class BasePage extends WebPage {
 			}
 			
 		};
-	}
-	
-	private boolean show(Class<? extends BasePage> page) {
-		return true;
 	}
 	
 	public String getRole() {

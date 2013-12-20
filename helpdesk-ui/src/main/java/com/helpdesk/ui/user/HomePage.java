@@ -44,6 +44,7 @@ public class HomePage extends BasePage {
 			setResponsePage(SingInPage.class);
 			return;
 		}
+		
 		filterOption = getHDSession().getHomePageStatus();
 		WebMarkupContainer container = initRequsetConteiner("requsetConteiner");
 		ListView<RequestEntity> listView = initRequestTable("repeatingView", getRequestList());

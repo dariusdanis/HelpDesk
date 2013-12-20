@@ -23,6 +23,12 @@ public class FacilityEntity {
 	@OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "facilityEntity")
 	private List<RequestEntity> requests;
 	
+	public FacilityEntity() {}
+	
+	public FacilityEntity(String name) {
+		this.name = name;
+	}
+
 	public int getId() {
 		return id;
 	}

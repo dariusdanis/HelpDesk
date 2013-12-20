@@ -20,15 +20,15 @@ public class Constants {
 	public static final int MAX_LENGTH = 40;
 	public static final int MAX_LENGTH_TAREA = 9000;
 	
-	public static final String BAD_PHONE = "TODO: bad phone";
-	public static final String BAD_EMAIL = "TODO: bad Email";
-	public static final String TAKEN_EMAIL = "TODO: email is taken";
-	public static final String REQUED = "TODO: field are requed!";
+	public static final String BAD_PHONE = "Wrong phone number";
+	public static final String BAD_EMAIL = "Wrong email adress";
+	public static final String TAKEN_EMAIL = "Email is taken";
+	public static final String REQUIRED = "Field is required!";
 	public static final String NEW_REQUEST = "New Request!";
-	public static final String BACK_TO_ADMIN = "TODO: Back To Admin!";
-	public static final String NEW_ASSIGMENT = "TODO: New Assigment!";
-	public static final String REQUEST_SOLVE = "TODO: Your Request Was Solved!";
-	public static final String WOUNT_SOLVE = "TODO: Woun't solve!";
+	public static final String BACK_TO_ADMIN = "Back To Admin!";
+	public static final String NEW_ASSIGMENT = "New Assigment!";
+	public static final String REQUEST_SOLVE = "Your request was solved!";
+	public static final String WOUNT_SOLVE = "Request can't be solved!";
 	
 	public static final String HPCompany = "Help Desk";
 	

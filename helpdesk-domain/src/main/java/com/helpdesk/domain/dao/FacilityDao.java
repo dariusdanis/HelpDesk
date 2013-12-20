@@ -12,4 +12,6 @@ public interface FacilityDao {
 	List<FacilityEntity> getAll();
 	
 	FacilityEntity mege(FacilityEntity facilityEntity);
+	
+	FacilityEntity getById(int id);
 }

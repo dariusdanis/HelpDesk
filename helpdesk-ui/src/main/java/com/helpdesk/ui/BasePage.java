@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -33,6 +32,7 @@ import com.helpdesk.domain.service.NotificationService;
 import com.helpdesk.domain.service.UserService;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
+import com.helpdesk.ui.statistic.StatisticsPage;
 import com.helpdesk.ui.user.AddUserPage;
 import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
@@ -78,6 +78,7 @@ public class BasePage extends WebPage {
 		menuItems.add(initEmployeeLink(menuItems.newChildId(), "Add User"));
 		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
 		menuItems.add(initAllUserLink(menuItems.newChildId(), "All Users"));
+		menuItems.add(initPageStatisticsLink(menuItems.newChildId(), "Page Statistics"));
 		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
@@ -87,7 +88,21 @@ public class BasePage extends WebPage {
 		add(notificationConteiner);
 	}
 
-	private Component initAllUserLink(String wicketId, String label) {
+	private Link<Object> initPageStatisticsLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(StatisticsPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initAllUserLink(String wicketId, String label) {
 		Link<Object> link = new Link<Object>(wicketId) {
 			private static final long serialVersionUID = 1L;
 

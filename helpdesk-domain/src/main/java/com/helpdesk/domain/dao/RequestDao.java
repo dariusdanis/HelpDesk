@@ -25,4 +25,6 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status);
 	
+	List<Integer> getTopThree();
+	
 }

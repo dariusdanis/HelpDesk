@@ -1,9 +1,11 @@
 package com.helpdesk.jpa;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -82,6 +84,23 @@ public class RequestDaoJpa implements RequestDao {
 		query.setParameter("status", status);
 		query.setParameter("id", engineerEntity.getId());
 		return query.getResultList();
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<Integer> getTopThree() {
+		List<Integer> list = new ArrayList<Integer>();
+		Query q = em.createQuery("SELECT r.facilityEntity.id, SUM(r.timeSpend) AS timeSped FROM RequestEntity r " +
+				"GROUP BY r.facilityEntity.id ORDER BY timeSped DESC");
+		q.setMaxResults(3);
+		List<Object[]> employees = (List<Object[]>) q.getResultList();
+		for (Object[] employee : employees) {
+			if (employee[1] != null) {
+				list.add((Integer) employee[0]); //ID
+				list.add(Integer.parseInt((String) employee[1])); //COUNT
+			}
+		}
+		return list;
 	}
 
 }

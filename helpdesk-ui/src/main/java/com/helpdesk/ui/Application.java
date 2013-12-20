@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
+import com.helpdesk.ui.statistic.StatisticsPage;
 import com.helpdesk.ui.user.AddUserPage;
 import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
@@ -35,6 +36,7 @@ public class Application extends AuthenticatedWebApplication {
 		mountPage("request/${id}", RequestPage.class);
 		mountPage("user/profile/${id}", ProfilePage.class);
 		mountPage("user/alluser", AllUserPage.class);
+		mountPage("/statistics", StatisticsPage.class);
 	}
 
 	@Override

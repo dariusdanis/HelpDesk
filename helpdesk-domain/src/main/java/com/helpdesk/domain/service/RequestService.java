@@ -62,4 +62,9 @@ public class RequestService {
 		return requsetDao.getAllByEngineerAndNotStatus(engineerEntity, status);
 	}
 	
+	@Transactional
+	public List<Integer> getTopThree() {
+		return requsetDao.getTopThree();
+	}
+	
 }

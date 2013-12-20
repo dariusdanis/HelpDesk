@@ -29,4 +29,9 @@ public class FacilityService {
 		return facilityDao.mege(facilityEntity);
 	}
 	
+	@Transactional
+	public FacilityEntity getById(int id) {
+		return facilityDao.getById(id);
+	}
+	
 }

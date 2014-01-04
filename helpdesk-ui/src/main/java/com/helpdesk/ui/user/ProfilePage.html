@@ -28,22 +28,19 @@
                             <input wicket:id="company" class="span5" type="text" readonly/>
                         </div>
                     
-                        <form class="inline-input" id="requsetForm">
-                         
+                        <form class="inline-input" wicket:id="passwordForm">
 	                        <div class="span5 field-box">
 	                            <label>New Password:</label>
-	                            <input class="span5" type="text"/>
+	                            <input wicket:id="newPassword" class="span5" type="text"/>
 	                        </div>
 	                        <div class="span5 field-box">
 	                            <label>Confirm Password:</label>
-	                            <input class="span5" type="text"/>
+	                            <input wicket:id="confirmPassword" class="span5" type="text"/>
 	                        </div>
 	                        <div class="span11 field-box actions">
                                 <button class="btn-glow primary" style="margin-right: 200px;">Submit changes!</button>
                             </div>
                         </form>
-                        
-                        
                     </div>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 package com.helpdesk.ui.user;
 
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -19,8 +20,8 @@ public class ProfilePage extends BasePage {
 	
 	private UserEntity userEntity;
 	
-	public static PageParameters parametersWith(int eventId) {
-		return new PageParameters().add(USER_ID, eventId);
+	public static PageParameters parametersWith(int userId) {
+		return new PageParameters().add(USER_ID, userId);
 	}
 	
 	public ProfilePage(PageParameters params) {
@@ -41,8 +42,10 @@ public class ProfilePage extends BasePage {
 			setResponsePage(HomePage.class);
 			return;
 		} else if (userEntity.getId() != getLoggedUser().getId()) {
-			setResponsePage(HomePage.class);
-			return;
+			if (!director()) {
+				setResponsePage(HomePage.class);
+				return;
+			}
 		}
 		
 		add(initReadOnlyInput("name", userEntity.getName()));
@@ -50,6 +53,7 @@ public class ProfilePage extends BasePage {
 		add(initReadOnlyInput("phone", userEntity.getPhone()));
 		add(initReadOnlyInput("email", userEntity.getEmail()));
 		add(initReadOnlyInput("company", userEntity.getCompanyEntity().getComapanyName()));
+		add(initForm("passwordForm"));
 	}
 
 	private TextField<String> initReadOnlyInput(String wicketId, String text) {
@@ -57,4 +61,8 @@ public class ProfilePage extends BasePage {
 		
 	}
 	
+	private Form<?> initForm(String wicketId) {
+		Form<?> form = new Form<Void>(wicketId);		
+		return form;
+	}
 }

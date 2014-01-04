@@ -9,35 +9,45 @@
                         <form class="new_user_form inline-input" wicket:id="employeeForm" id="employeeForm">
                              <div class="span5 field-box">
                                 <label>Position:</label>
-                                <div style="margin-top: 6px;">
+                                <div style="margin-top: 6px;" id="roleEntity">
                                     <select style="width: 250px;" wicket:id="position"  multiple="multiple" class="select2"></select>
                                 </div>
                             </div>
                             <div class="span5 field-box">
                                 <label>Company:</label>
-                                <div style="margin-top: 6px;">
+                                <div style="margin-top: 6px;" id="companyEntity">
                                     <select style="width: 250px;" wicket:id="company"  multiple="multiple" class="select2"></select>
                                 </div>
                             </div>  
                             <div class="span5 field-box">
                                 <label>Name:</label>
-                                <input wicket:id="name" class="span8" type="text" />
+                                <div id="name">
+                                	<input wicket:id="name" class="span8" type="text" />
+                                </div>
                             </div>
                             <div class="span5 field-box">
                                 <label>Surname:</label>
-                                <input wicket:id="surname" class="span8" type="text" />
+                                <div id="surname">
+                             		<input wicket:id="surname" class="span8" type="text" />
+                                </div>
                             </div>
                               <div class="span10 field-box">
                                 <label>Email:</label>
-                                <input wicket:id="email" class="span8" type="text" />
+                                <div id="email">
+                                	<input wicket:id="email" class="span8" type="text" />
+                                </div>
                             </div>
                             <div class="span10 field-box">
                                 <label>Phone:</label>
-                                <input wicket:id="phone" class="span8" type="text" />
+                                <div id="phone">
+                                	<input wicket:id="phone" class="span8" type="text" />
+                                </div>
                             </div>
                              <div class="span10 field-box">
                                 <label>Password:</label>
+                                <div id="password">
                                 <input wicket:id="password" class="span8" type="password" />
+                                </div>
                             </div>
                             <div class="span5 field-box actions">
                                 <button type="submit" class="btn-glow primary">Add employee</button>

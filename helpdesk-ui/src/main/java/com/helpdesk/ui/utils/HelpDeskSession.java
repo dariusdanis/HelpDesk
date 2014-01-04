@@ -22,7 +22,7 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 	private UserService userService;
 	private UserEntity user;
 	
-	private String homePageStatus;
+	private String homePageStatus = Constants.FOCurrent();
 	
 	public HelpDeskSession(Request request) {
 		super(request);

@@ -8,13 +8,20 @@ public class Constants {
 	public static enum Status {NOT_ASSIGNED, WONT_SOLVE, SOLVED, ASSIGNED}
 	public static enum Roles {ADMIN, CLIEN, ENGIN, DIREC}
 	public static enum ReceiptMethod {EMAIL, PHONE, SELF_SERVICE}
-	public static enum FilterOptions {CURRENT, HISTORY}
+	public static enum FilterOptions {CURRENT, HISTORY, ALL}
 	
 	public static List<String> receiptMethodsList = Arrays.asList(new String[] {ReceiptMethod.EMAIL.toString().toLowerCase(),
 			ReceiptMethod.PHONE.toString().toLowerCase()});
+		
+	public static List<String> filterOptionsAdminAndDirect = Arrays.asList(new String[] {FilterOptions.CURRENT.toString().toLowerCase(),
+			FilterOptions.HISTORY.toString().toLowerCase(), FilterOptions.ALL.toString().toLowerCase()});
 	
-	public static List<String> filterOptions = Arrays.asList(new String[] {FilterOptions.CURRENT.toString().toLowerCase(),
+	public static List<String> filterOptionsClient = Arrays.asList(new String[] {FilterOptions.CURRENT.toString().toLowerCase(),
 			FilterOptions.HISTORY.toString().toLowerCase()});
+	public static List<String> filterOptionsEngin = Arrays.asList(new String[] {FilterOptions.CURRENT.toString().toLowerCase(),
+			FilterOptions.HISTORY.toString().toLowerCase()});
+	
+	
 	
 	public static final int MIN_LENGTH = 1;
 	public static final int MAX_LENGTH = 40;
@@ -33,7 +40,17 @@ public class Constants {
 	public static final String HPCompany = "Help Desk";
 	
 	
-	
 	private Constants() {}
 	
+	public static String FOCurrent() {
+		return FilterOptions.CURRENT.toString().toLowerCase();
+	}
+	
+	public static String FOHistory() {
+		return FilterOptions.HISTORY.toString().toLowerCase();
+	}
+
+	public static String FOAll() {
+		return FilterOptions.ALL.toString().toLowerCase();
+	}
 }

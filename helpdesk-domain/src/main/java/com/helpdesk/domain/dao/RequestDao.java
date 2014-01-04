@@ -21,10 +21,21 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status);
 
-	List<RequestEntity> getAllUnassignedAndStatus(String status);
+	List<RequestEntity> getAllByStatus(String status);
 
 	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status);
 	
 	List<Integer> getTopThree();
+	
+	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status);
+
+	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status);
+
+	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status);
+
+	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user);
+
+	List<RequestEntity> getDirectorHistory(UserEntity director, String solved,
+			String assigned);
 	
 }

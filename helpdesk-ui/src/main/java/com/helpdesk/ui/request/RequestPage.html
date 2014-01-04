@@ -55,7 +55,9 @@
                     <form wicket:id="requsetForm" class="inline-input" id="requsetForm">
                         <div class="span12 field-box">
                             <label>Solution:</label>
-                            <textarea wicket:id="solution" class="span8"  maxlength="9000"></textarea>
+                            <div id="requestSolution">
+                            	<textarea wicket:id="solution" class="span8"  maxlength="9000"></textarea>
+                            </div>
                         </div>
                          <div wicket:id="validateAndShowModalConteiner" class="span11 field-box actions">
                             <button class="btn-glow primary" wicket:id="validateAndShowModal">Solve</button>
@@ -70,11 +72,15 @@
 						      <div class="modal-body">
 				                <div class="span5 field-box">
                                     <label>Time spend (min):</label>
-                                    <input wicket:id="timeSpend" class="span4" type="text" />
+                                    <div id="timeSpend">
+                                    	<input wicket:id="timeSpend" class="span4" type="text" />
+                                    </div>
                                 </div>
                                 <div class="span5 field-box">
                                     <label>What was done:</label>
-                                    <textarea wicket:id="whatWasDone" class="was-done" maxlength="9000"></textarea>
+                                    <div id="whatWasDone">
+                                    	<textarea wicket:id="whatWasDone" class="was-done" maxlength="9000"></textarea>
+                                	</div>
                                 </div>
 						      </div>
 						      <div class="modal-footer">

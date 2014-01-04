@@ -53,8 +53,8 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllUnassignedAndStatus(String status) {
-		return requsetDao.getAllUnassignedAndStatus(status);
+	public List<RequestEntity> getAllByStatus(String status) {
+		return requsetDao.getAllByStatus(status);
 	}
 
 	@Transactional
@@ -65,6 +65,31 @@ public class RequestService {
 	@Transactional
 	public List<Integer> getTopThree() {
 		return requsetDao.getTopThree();
+	}
+
+	@Transactional
+	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity admin, String status) {
+		return requsetDao.getAllByAdminAndNotStatus(admin, status);
+	}
+
+	@Transactional
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status) {
+		return requsetDao.getAllByBelongsTosAndNotStatu(belongsTo, status);
+	}
+
+	@Transactional
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status) {
+		return requsetDao.getAllByBelongsToAndStatus(belongsTo, status);
+	}
+
+	@Transactional
+	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user) {
+		return requsetDao.getAllByStatusOrAssignetToUser(status, user);
+	}
+
+	public List<RequestEntity> getDirectorHistory(UserEntity director,
+			String solved, String assigned) {
+		return requsetDao.getDirectorHistory(director, solved, assigned);
 	}
 	
 }

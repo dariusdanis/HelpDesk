@@ -1,6 +1,7 @@
 package com.helpdesk.ui.request;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -96,9 +97,11 @@ public class RequestPage extends BasePage {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<Object> validationError = validateForm(form, requestEntity.getRequestSolution());
+				List<Object> validationError = validateRequsetForm(
+						Arrays.asList(new String[]{"requestSolution"}),
+						requestEntity);
 				if (validationError != null) {
-					appendJavaScript(target, form, validationError.get(0), validationError.get(1));
+					appendJavaScript(target, validationError.get(0), validationError.get(1));
 				} else {
 					target.appendJavaScript("$('#modal').modal('show')");
 				}
@@ -116,20 +119,24 @@ public class RequestPage extends BasePage {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
-				if (!client() && !admin()) {
-					List<Object> validationError = validateForm(form, requestEntity.getRequestSolution(),
-							 requestEntity.getTimeSpend(), requestEntity.getWhatWasDone());
+				if (requestEntity.getEngineerEntity() != null && 
+						requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) {
+					
+					List<Object> validationError = validateRequsetForm( 
+							Arrays.asList(new String[]{"requestSolution", "timeSpend", "whatWasDone"}),
+							requestEntity);
 					if (validationError != null) {
-						appendJavaScript(target, form, validationError.get(0), validationError.get(1));
+						appendJavaScript(target, validationError.get(0), validationError.get(1));
 					} else {
 						try {
 							Integer.parseInt(requestEntity.getTimeSpend());
 							requestEntity.setStatus(Constants.Status.SOLVED.toString());
+							requestEntity.setSolveDate(new Date());
 							notificationHandler(requestService.merge(requestEntity), 
 									Constants.REQUEST_SOLVE);
 							setResponsePage(HomePage.class);
 						} catch (Exception e) {
-							appendJavaScript(target, form, 1, "TODO: Bad time!");
+							appendJavaScript(target, "timeSpend" , "Bad time!");
 						}
 					}
 				}
@@ -192,7 +199,8 @@ public class RequestPage extends BasePage {
 	
 	private boolean authorize(RequestEntity requestEntity, UserEntity userEntity) {
 		if (requestEntity.getCreatorEntity() != null && 
-				requestEntity.getCreatorEntity().getId() == userEntity.getId()) {
+				requestEntity.getCreatorEntity().getId() == userEntity.getId() ||
+				requestEntity.getRequestBelongsTo().getId() == userEntity.getId()) {
 			return true;
 		} else if (admin() || director()) {
 			return true;

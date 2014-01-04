@@ -70,9 +70,9 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllUnassignedAndStatus(String status) {
+	public List<RequestEntity> getAllByStatus(String status) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				"r.engineerEntity = null and r.status = :status", RequestEntity.class);
+				"r.status = :status", RequestEntity.class);
 		query.setParameter("status", status);
 		return query.getResultList();
 	}
@@ -101,6 +101,54 @@ public class RequestDaoJpa implements RequestDao {
 			}
 		}
 		return list;
+	}
+
+	@Override
+	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
+				" r.administratorEntity.id = :id AND r.status != :status", RequestEntity.class);
+		query.setParameter("status", status);
+		query.setParameter("id", user.getId());
+		return query.getResultList();
+	}
+
+	@Override
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
+				" r.requestBelongsTo.id = :id AND r.status != :status", RequestEntity.class);
+		query.setParameter("status", status);
+		query.setParameter("id", belongsTo.getId());
+		return query.getResultList();
+	}
+
+	@Override
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
+				" r.requestBelongsTo.id = :id AND r.status = :status", RequestEntity.class);
+		query.setParameter("status", status);
+		query.setParameter("id", belongsTo.getId());
+		return query.getResultList();
+	}
+
+	@Override
+	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
+				" r.engineerEntity.id = :id OR r.status = :status", RequestEntity.class);
+		query.setParameter("status", status);
+		query.setParameter("id", user.getId());
+		return query.getResultList();
+	}
+
+	@Override
+	public List<RequestEntity> getDirectorHistory(UserEntity director,
+			String solved, String assigned) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
+				"(r.engineerEntity.id = :id OR r.administratorEntity.id = :id) AND " +
+				"(r.status = :status1 OR r.status = :status2)", RequestEntity.class);
+		query.setParameter("status1", solved);
+		query.setParameter("status2", assigned);
+		query.setParameter("id", director.getId());
+		return query.getResultList();
 	}
 
 }

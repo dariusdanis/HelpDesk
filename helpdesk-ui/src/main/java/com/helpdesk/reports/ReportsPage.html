@@ -2,17 +2,21 @@
 	<div id="pad-wrapper" class="new-user">
 		<div class="row-fluid form-wrapper">
 			<div class="container">
-				<form wicket:id="reportsFiterForm">
+				<form id="reportsFiterForm" wicket:id="reportsFiterForm">
 					<div class="inline-input" >
 						<div class="span5 field-box">
 						    <label>Start Date:</label>
-						    <input wicket:id="startDate" class="search datepicker" type="text" />
+						     <div id="startDate">
+						    	<input wicket:id="startDate" class="search datepicker" type="text" />
+						     </div>
 						</div>
 					</div>
 					<div class="inline-input" >
 						<div class="span5 field-box">
 						    <label>End Date:</label>
-						    <input wicket:id="endDate" class="search datepicker" type="text" />
+						    <div id="endDate">
+						    	<input wicket:id="endDate" class="search datepicker" type="text" />
+						    </div>
 						</div>
 					</div>
 					<div class="span11 field-box actions">
@@ -64,4 +68,13 @@
             </table>
         </div>
 	</div>
+	<script type="text/javascript">
+		 $(document).ready(function(){
+			$("#reportsFiterForm").validationEngine();
+	     });
+	
+		function appendError(conteinerId, message) {
+        	$('#'+conteinerId).validationEngine('showPrompt', message, 'error');
+	    } 
+	</script>
 </wicket:extend>

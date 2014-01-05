@@ -36,6 +36,8 @@ public class Constants {
 	public static final String NEW_ASSIGMENT = "New Assigment!";
 	public static final String REQUEST_SOLVE = "Your request was solved!";
 	public static final String WOUNT_SOLVE = "Request can't be solved!";
+	public static final String BAD_DATE = "Bad Date Format!";
+	public static final String BAD_DATE_PERIOD = "Bad Period!";
 	
 	public static final String HPCompany = "Help Desk";
 	

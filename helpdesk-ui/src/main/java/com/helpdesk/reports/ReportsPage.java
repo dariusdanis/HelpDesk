@@ -3,6 +3,7 @@ package com.helpdesk.reports;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import com.helpdesk.domain.entity.RequestEntity;
 import com.helpdesk.domain.service.RequestService;
 import com.helpdesk.ui.BasePage;
+import com.helpdesk.ui.SingInPage;
 import com.helpdesk.ui.request.RequestPage;
+import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.utils.Constants;
 
 
 public class ReportsPage extends BasePage {
@@ -37,6 +41,13 @@ public class ReportsPage extends BasePage {
 	@Override
 	protected void onInitialize() {
 		super.onInitialize();
+		if (!isSingIn()) {
+			setResponsePage(SingInPage.class);
+			return;
+		} else if (!director()) {
+			setResponsePage(HomePage.class);
+			return;
+		}
 		
 		WebMarkupContainer reportsContainer = initReportsContainer("reportsContainer");
 		Form<?> form = initForm("reportsFiterForm", reportsContainer);
@@ -103,27 +114,38 @@ public class ReportsPage extends BasePage {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
 				List<Object> validationError = validateFiltersDateForm();
-				if (startDateStr.matches("\\d{2}-\\d{2}-\\d{4}")) {
-					
-				}
 				if (validationError == null) {
 					reportsContainer.removeAll();
 					reportsContainer.add(initReportTable("repeatingView", requestService.getAll()));
 					target.add(reportsContainer);
 				} else {
-					
+					appendJavaScript(target, validationError.get(0), validationError.get(1));
 				}
 			}
-			
 		});
 		
 		return form;
 	}
 
 	protected List<Object> validateFiltersDateForm() {
+		if (startDateStr == null) {
+			return Arrays.asList(new Object[]{"startDate", Constants.REQUIRED});
+		}
+		if (endDateStr == null) {
+			return Arrays.asList(new Object[]{"endDate", Constants.REQUIRED});
+		}
+		if (!startDateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+			return Arrays.asList(new Object[]{"startDate", Constants.BAD_DATE});
+		} 
+		if (!endDateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+			return Arrays.asList(new Object[]{"endDate", Constants.BAD_DATE});
+		}
 		try {
 			Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(startDateStr);
 			Date endDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDateStr);
+			if (!startDate.before(endDate)) {
+				return Arrays.asList(new Object[]{"startDate", Constants.BAD_DATE_PERIOD});
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}

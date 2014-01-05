@@ -141,6 +141,11 @@ $(function () {
   			$checks.prop("checked", false);
   		}  		
   	});
-
+  	
+  	$("#logOff").hover(function() {
+  		$("#logOffInfo").show();
+  	}, function() {
+  		$("#logOffInfo").hide();
+  	});
 
 });

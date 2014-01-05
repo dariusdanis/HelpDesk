@@ -114,3 +114,8 @@ textarea {
     max-width: 380px;
     min-width: 380px;
 }
+
+#logOffInfo li {
+	padding-left: 10px;
+	padding-right: 10px;
+}

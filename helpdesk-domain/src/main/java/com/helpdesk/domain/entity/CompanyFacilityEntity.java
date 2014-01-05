@@ -28,6 +28,9 @@ public class CompanyFacilityEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date expiryDate;
     
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date signedDate;
+    
     public CompanyFacilityEntity() {
 	}
 
@@ -62,5 +65,13 @@ public class CompanyFacilityEntity {
 	public void setExpiryDate(Date expiryDate) {
 		this.expiryDate = expiryDate;
 	}
-    
+
+	public Date getSignedDate() {
+		return signedDate;
+	}
+
+	public void setSignedDate(Date signedDate) {
+		this.signedDate = signedDate;
+	}
+	
 }

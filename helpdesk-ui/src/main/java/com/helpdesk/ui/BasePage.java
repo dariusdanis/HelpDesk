@@ -29,6 +29,7 @@ import com.helpdesk.domain.entity.RequestEntity;
 import com.helpdesk.domain.entity.UserEntity;
 import com.helpdesk.domain.service.NotificationService;
 import com.helpdesk.domain.service.UserService;
+import com.helpdesk.reports.ReportsPage;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
 import com.helpdesk.ui.statistic.StatisticsPage;
@@ -75,9 +76,10 @@ public class BasePage extends WebPage {
 		RepeatingView menuItems = new RepeatingView("menuItems");
 		menuItems.add(initProfileLink(menuItems.newChildId(), "My Profile"));
 		menuItems.add(initEmployeeLink(menuItems.newChildId(), "Add User"));
-		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
 		menuItems.add(initAllUserLink(menuItems.newChildId(), "All Users"));
 		menuItems.add(initPageStatisticsLink(menuItems.newChildId(), "Page Statistics"));
+		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
+		menuItems.add(initReportsLink(menuItems.newChildId(), "View Reports"));
 		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
@@ -85,6 +87,21 @@ public class BasePage extends WebPage {
 		add(menuItems);
 		add(initWebSocket());
 		add(notificationConteiner);
+	}
+
+	private Link<Object> initReportsLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(ReportsPage.class);
+			}
+		};
+		
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
 	}
 
 	private Link<Object> initPageStatisticsLink(String wicketId, String label) {

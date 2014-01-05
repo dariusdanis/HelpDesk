@@ -7,6 +7,7 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.springframework.stereotype.Component;
 
+import com.helpdesk.reports.ReportsPage;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
 import com.helpdesk.ui.statistic.StatisticsPage;
@@ -36,7 +37,8 @@ public class Application extends AuthenticatedWebApplication {
 		mountPage("request/${id}", RequestPage.class);
 		mountPage("user/profile/${id}", ProfilePage.class);
 		mountPage("user/alluser", AllUserPage.class);
-		mountPage("/statistics", StatisticsPage.class);
+		mountPage("reports", ReportsPage.class);
+		mountPage("statistics", StatisticsPage.class);
 	}
 
 	@Override

@@ -1,7 +1,12 @@
 package com.helpdesk.domain.service;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.Minutes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,4 +97,37 @@ public class RequestService {
 		return requsetDao.getDirectorHistory(director, solved, assigned);
 	}
 	
+	@Transactional
+	public List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate) {
+		List<RequestEntity> entities = new ArrayList<RequestEntity>();
+		List<RequestEntity> allEntities = requsetDao.getAllOverDoRequest(startDate, endDate);
+		Calendar cal = Calendar.getInstance();
+		System.out.println(allEntities.size());
+		for (RequestEntity entity : allEntities) {
+			Date solveDate = entity.getSolveDate() == null ? new Date() : entity.getSolveDate();
+			cal.setTime(solveDate);
+			DateTime solveDateDT = new DateTime(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 
+						cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), 
+						cal.get(Calendar.MINUTE));
+			
+			cal.setTime(entity.getRequestDate());
+			DateTime createDateDT = new DateTime(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 
+					cal.get(Calendar.DAY_OF_MONTH), cal.get(Calendar.HOUR_OF_DAY), 
+					cal.get(Calendar.MINUTE));
+			
+			Minutes diff = Minutes.minutesBetween(createDateDT, solveDateDT);
+			int diffInteger = Integer.valueOf(diff.toString().substring(2, diff.toString().length() - 1));
+			
+			if (entity.getTypeEntity().getType().equals("REQ")) {
+				if ((diffInteger / 60) >= Integer.valueOf(entity.getFacilityEntity().getLhReq())) {
+					entities.add(entity);
+				}
+			} else {
+				if ((diffInteger / 60) >= Integer.valueOf(entity.getFacilityEntity().getLhInc())) {
+					entities.add(entity);
+				}
+			}
+		}
+		return entities;
+	}
 }

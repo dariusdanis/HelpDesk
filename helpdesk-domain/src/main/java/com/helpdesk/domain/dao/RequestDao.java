@@ -1,5 +1,6 @@
 package com.helpdesk.domain.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.helpdesk.domain.entity.RequestEntity;
@@ -35,7 +36,8 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user);
 
-	List<RequestEntity> getDirectorHistory(UserEntity director, String solved,
-			String assigned);
+	List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned);
+	
+	List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate);
 	
 }

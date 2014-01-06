@@ -34,6 +34,8 @@ public class ReportsPage extends BasePage {
 
 	private String startDateStr;
 	private String endDateStr;
+	private Date startDate;
+	private Date endDate;
 	
 	@SpringBean
 	private RequestService requestService;
@@ -116,7 +118,8 @@ public class ReportsPage extends BasePage {
 				List<Object> validationError = validateFiltersDateForm();
 				if (validationError == null) {
 					reportsContainer.removeAll();
-					reportsContainer.add(initReportTable("repeatingView", requestService.getAll()));
+					reportsContainer.add(initReportTable("repeatingView", 
+							requestService.getAllOverDoRequest(startDate, endDate)));
 					target.add(reportsContainer);
 				} else {
 					appendJavaScript(target, validationError.get(0), validationError.get(1));
@@ -141,8 +144,8 @@ public class ReportsPage extends BasePage {
 			return Arrays.asList(new Object[]{"endDate", Constants.BAD_DATE});
 		}
 		try {
-			Date startDate = new SimpleDateFormat("dd/MM/yyyy").parse(startDateStr);
-			Date endDate = new SimpleDateFormat("dd/MM/yyyy").parse(endDateStr);
+			startDate = new SimpleDateFormat("MM/dd/yyyy").parse(startDateStr);
+			endDate = new SimpleDateFormat("MM/dd/yyyy").parse(endDateStr);
 			if (!startDate.before(endDate)) {
 				return Arrays.asList(new Object[]{"startDate", Constants.BAD_DATE_PERIOD});
 			}

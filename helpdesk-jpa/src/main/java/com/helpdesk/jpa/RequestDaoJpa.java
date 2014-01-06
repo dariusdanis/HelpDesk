@@ -1,11 +1,13 @@
 package com.helpdesk.jpa;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.TemporalType;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
@@ -151,4 +153,14 @@ public class RequestDaoJpa implements RequestDao {
 		return query.getResultList();
 	}
 
+	@Override
+	public List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate) {
+		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r WHERE " +
+				"r.requestDate BETWEEN :startDate AND :endDate)" 
+				, RequestEntity.class);
+		query.setParameter("startDate", startDate, TemporalType.TIMESTAMP);
+		query.setParameter("endDate", endDate, TemporalType.TIMESTAMP);
+		return query.getResultList();
+	}
+	
 }

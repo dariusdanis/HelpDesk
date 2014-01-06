@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+                                 http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+             version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+    <persistence-unit name="food" transaction-type="RESOURCE_LOCAL">
+        <class>com.helpdesk.domain.entity.UserEntity</class>
+        <class>com.helpdesk.domain.entity.RoleEntity</class>
+        <class>com.helpdesk.domain.entity.RequestEntity</class>
+        <class>com.helpdesk.domain.entity.TypeEntity</class>
+        <class>com.helpdesk.domain.entity.NotificationEntity</class> 
+        <class>com.helpdesk.domain.entity.NotificationInfoEntity</class>
+        <class>com.helpdesk.domain.entity.CompanyEntity</class>  
+        <class>com.helpdesk.domain.entity.FacilityEntity</class>  
+        <class>com.helpdesk.domain.entity.CompanyFacilityEntity</class>  
+        
+    </persistence-unit>
+</persistence>

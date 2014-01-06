@@ -1,0 +1,1 @@
+Simple wicket project

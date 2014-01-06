@@ -1,0 +1,79 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+    <div class="container-fluid">
+        <div id="pad-wrapper" class="new-user">
+            <div class="row-fluid header">
+                <h3>Add a new employee</h3>
+            </div>
+            <div class="row-fluid form-wrapper">
+                    <div class="container">
+                        <form class="new_user_form inline-input" wicket:id="employeeForm" id="employeeForm">
+                             <div class="span5 field-box">
+                                <label>Position:</label>
+                                <div style="margin-top: 6px;" id="roleEntity">
+                                    <select style="width: 250px;" wicket:id="position"  multiple="multiple" class="select2"></select>
+                                </div>
+                            </div>
+                            <div class="span5 field-box">
+                                <label>Company:</label>
+                                <div style="margin-top: 6px;" id="companyEntity">
+                                    <select style="width: 250px;" wicket:id="company"  multiple="multiple" class="select2"></select>
+                                </div>
+                            </div>  
+                            <div class="span5 field-box">
+                                <label>Name:</label>
+                                <div id="name">
+                                	<input wicket:id="name" class="span8" type="text" />
+                                </div>
+                            </div>
+                            <div class="span5 field-box">
+                                <label>Surname:</label>
+                                <div id="surname">
+                             		<input wicket:id="surname" class="span8" type="text" />
+                                </div>
+                            </div>
+                              <div class="span10 field-box">
+                                <label>Email:</label>
+                                <div id="email">
+                                	<input wicket:id="email" class="span8" type="text" />
+                                </div>
+                            </div>
+                            <div class="span10 field-box">
+                                <label>Phone:</label>
+                                <div id="phone">
+                                	<input wicket:id="phone" class="span8" type="text" />
+                                </div>
+                            </div>
+                             <div class="span10 field-box">
+                                <label>Password:</label>
+                                <div id="password">
+                                <input wicket:id="password" class="span8" type="password" />
+                                </div>
+                            </div>
+                            <div class="span5 field-box actions">
+                                <button type="submit" class="btn-glow primary">Add employee</button>
+                                 <span>OR</span>
+                                <input type="reset" value="Cancel" class="reset" />
+                            </div>                            
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+  <script type="text/javascript">
+    
+    $(document).ready(function(){
+        $("#employeeForm").validationEngine();
+    });
+           
+    function appendError(conteinerId, message) {
+        $('#'+conteinerId).validationEngine('showPrompt', message, 'error');
+    } 
+        
+    $(".select2").select2({
+        maximumSelectionSize: 1
+    });
+    
+   </script>
+        
+</wicket:extend>

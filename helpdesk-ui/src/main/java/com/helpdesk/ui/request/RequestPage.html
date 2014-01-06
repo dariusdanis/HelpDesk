@@ -1,0 +1,113 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+<div class="container-fluid">
+	<div id="pad-wrapper" class="new-user">
+		<div class="row-fluid header">
+		    <h3>MA-15</h3>
+		</div>
+		<div class="right-float" style="margin-right: 50px;">
+		<div wicket:id="requestOptions">
+			<div class="btn-group">
+	            <button class="btn glow dropdown-toggle" data-toggle="dropdown">
+	                <span class="icon-cog"></span>
+	            </button>
+	            <ul class="dropdown-menu">
+					<li><a wicket:id="wountSolve" href="#">Can't Solve</a></li>
+					<li><a wicket:id="backToAdmin" href="#">Back to Administrator</a></li>
+	            </ul>
+			</div>
+		</div>
+		</div>
+			<div class="row-fluid form-wrapper">
+                <div class="container">
+                    <div class="inline-input" >
+                        <div class="span5 field-box">
+                            <label>Engineer:</label>
+                            <div wicket:id="engineerConteiner">
+                                <input wicket:id="engineer" class="span5" type="text" readonly/>
+                                <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="engineerSelect"></select>
+                            </div>
+                        </div>
+						<div class="span5 field-box">
+						    <label>Summary:</label>
+						    <input wicket:id="summary" class="span5" type="text" readonly/>
+						</div>
+						<div class="span5 field-box">
+                            <label>Client:</label>
+                            <input wicket:id="client" class="span5" type="text" readonly/>
+                        </div>
+						<div class="span5 field-box">
+                            <label>Creation date:</label>
+                            <input wicket:id="date" class="span5" type="text" readonly/>
+                        </div>
+						<div class="span5 field-box">
+                            <label>Facility:</label>
+                            <input wicket:id="facility" class="span5" type="text" readonly/>
+                        </div>
+                        <div class="span5 field-box">
+                            <label>Parent:</label>
+                            <a href="#" wicket:id="linkToParent"> <label wicket:id="parentId"></label> </a>
+                        </div>
+						 <div class="span5 field-box">
+                            <label>Issue:</label>
+                            <textarea wicket:id="issue" class="span8"  maxlength="9000" readonly></textarea>
+                        </div>
+                    </div>
+                    <form wicket:id="requsetForm" class="inline-input" id="requsetForm">
+                        <div class="span12 field-box">
+                            <label>Solution:</label>
+                            <div id="requestSolution">
+                            	<textarea wicket:id="solution" class="span8"  maxlength="9000"></textarea>
+                            </div>
+                        </div>
+                         <div wicket:id="validateAndShowModalConteiner" class="span11 field-box actions">
+                            <button class="btn-glow primary" wicket:id="validateAndShowModal">Solve</button>
+                        </div>
+						<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+						      </div>
+						      <div class="modal-body">
+				                <div class="span5 field-box">
+                                    <label>Time spend (min):</label>
+                                    <div id="timeSpend">
+                                    	<input wicket:id="timeSpend" class="span4" type="text" />
+                                    </div>
+                                </div>
+                                <div class="span5 field-box">
+                                    <label>What was done:</label>
+                                    <div id="whatWasDone">
+                                    	<textarea wicket:id="whatWasDone" class="was-done" maxlength="9000"></textarea>
+                                	</div>
+                                </div>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						        <button type="submit" class="btn btn-primary">Confirm</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+                    </form>
+                </div>
+            </div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $("#requsetForm").validationEngine();
+    });
+           
+    function appendError(conteinerId, message) {
+        $('#'+conteinerId).validationEngine('showPrompt', message, 'error');
+    } 
+    
+    $(".select2").select2({
+        maximumSelectionSize: 1
+    });
+</script>
+</wicket:extend>

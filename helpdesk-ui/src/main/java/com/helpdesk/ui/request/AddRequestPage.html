@@ -66,7 +66,8 @@
 	    });
 	           
 	    function appendError(conteinerId, message) {
-	        $('#'+conteinerId).validationEngine('showPrompt', message, 'error');
+	    	field = $('#'+conteinerId).find('input[type=text],textarea,select').filter(':visible:first');
+	    	field.validationEngine('showPrompt', message, 'error');
 	    } 
 	    
 	    $(".select2").select2({

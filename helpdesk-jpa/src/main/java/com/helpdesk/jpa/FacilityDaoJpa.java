@@ -45,4 +45,9 @@ public class FacilityDaoJpa implements FacilityDao {
 		return em.merge(facilityEntity);
 	}
 
+	@Override
+	public FacilityEntity getById(int id) {
+		return em.find(FacilityEntity.class, id);
+	}
+
 }

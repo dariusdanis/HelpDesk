@@ -1,5 +1,6 @@
 package com.helpdesk.domain.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import com.helpdesk.domain.entity.RequestEntity;
@@ -11,7 +12,7 @@ public interface RequestDao {
 	
 	List<RequestEntity> getAll();
 	
-	List<RequestEntity> getAllByCreator(UserEntity userEntity);
+	List<RequestEntity> getAllByCreatOrBelongsTo(UserEntity userEntity);
 
 	List<RequestEntity> getAllUnassigned();
 	
@@ -21,8 +22,22 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status);
 
-	List<RequestEntity> getAllUnassignedAndStatus(String status);
+	List<RequestEntity> getAllByStatus(String status);
 
 	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status);
+	
+	List<Integer> getTopThree();
+	
+	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status);
+
+	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status);
+
+	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status);
+
+	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user);
+
+	List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned);
+	
+	List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate);
 	
 }

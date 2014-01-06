@@ -45,6 +45,10 @@ public class RequestEntity {
     private TypeEntity typeEntity;
     
     @ManyToOne
+    @JoinColumn(name = "belongsToFk")
+    private UserEntity requestBelongsTo;
+    
+    @ManyToOne
     @JoinColumn(name = "creatorFk")
     private UserEntity creatorEntity;
     
@@ -240,6 +244,14 @@ public class RequestEntity {
 
 	public void setReceiptMethod(String receiptMethod) {
 		this.receiptMethod = receiptMethod;
+	}
+	
+	public UserEntity getRequestBelongsTo() {
+		return requestBelongsTo;
+	}
+
+	public void setRequestBelongsTo(UserEntity requestBelongsTo) {
+		this.requestBelongsTo = requestBelongsTo;
 	}
 
 	@Override

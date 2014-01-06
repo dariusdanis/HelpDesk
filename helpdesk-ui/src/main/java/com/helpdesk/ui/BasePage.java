@@ -1,7 +1,9 @@
 package com.helpdesk.ui;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,6 @@ import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.PasswordTextField;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
@@ -27,12 +25,16 @@ import org.apache.wicket.protocol.ws.api.WebSocketBehavior;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import com.helpdesk.domain.entity.NotificationEntity;
+import com.helpdesk.domain.entity.RequestEntity;
 import com.helpdesk.domain.entity.UserEntity;
 import com.helpdesk.domain.service.NotificationService;
 import com.helpdesk.domain.service.UserService;
+import com.helpdesk.reports.ReportsPage;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.request.RequestPage;
+import com.helpdesk.ui.statistic.StatisticsPage;
 import com.helpdesk.ui.user.AddUserPage;
+import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
 import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.Constants;
@@ -43,7 +45,7 @@ public class BasePage extends WebPage {
 	
 	public static Map<String, Integer> pageMap = new HashMap<String, Integer>();
 	
-	private List<String> messages = new ArrayList<String>();
+	public List<String> messages = new ArrayList<String>();
 	
 	@SpringBean
 	protected NotificationService notificationService;
@@ -72,9 +74,12 @@ public class BasePage extends WebPage {
 		notificationConteiner.setOutputMarkupId(true);
 		
 		RepeatingView menuItems = new RepeatingView("menuItems");
-		menuItems.add(initLink(menuItems.newChildId(), ProfilePage.class, "My Profile"));
-		menuItems.add(initLink(menuItems.newChildId(), AddUserPage.class, "Add Employee"));
-		menuItems.add(initLink(menuItems.newChildId(), AddRequestPage.class, "Create Request"));
+		menuItems.add(initProfileLink(menuItems.newChildId(), "My Profile"));
+		menuItems.add(initEmployeeLink(menuItems.newChildId(), "Add User"));
+		menuItems.add(initAllUserLink(menuItems.newChildId(), "All Users"));
+		menuItems.add(initPageStatisticsLink(menuItems.newChildId(), "Page Statistics"));
+		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
+		menuItems.add(initReportsLink(menuItems.newChildId(), "View Reports"));
 		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
@@ -82,6 +87,90 @@ public class BasePage extends WebPage {
 		add(menuItems);
 		add(initWebSocket());
 		add(notificationConteiner);
+	}
+
+	private Link<Object> initReportsLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(ReportsPage.class);
+			}
+		};
+		
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initPageStatisticsLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(StatisticsPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initAllUserLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AllUserPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initRequestLinkLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AddRequestPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisibilityAllowed(!engineer());
+		return link;
+	}
+
+	private Link<Object> initEmployeeLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(AddUserPage.class);
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+
+	private Link<Object> initProfileLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(ProfilePage.class, ProfilePage.parametersWith(getLoggedUser().getId()));
+			}
+		};
+		link.add(new Label("menuLabel", label));
+		return link;
 	}
 
 	private Label initNotificationCounter(String wicketId) {
@@ -123,21 +212,6 @@ public class BasePage extends WebPage {
 		link.add(new Label("notificationLabel", notificationEntity.getInfoEntity().getNotificationText()));
 		return link;
 	}
-
-	private Link<Object> initLink(String wicketId, final Class<? extends BasePage> page, String label) {
-		Link<Object> link = new Link<Object>(wicketId) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick() {
-				setResponsePage(page);
-			}
-			
-		};
-		link.add(new Label("menuLabel", label));
-		link.setVisible(show(page));
-		return link;
-	}
 	
 	private Link<Object> initHomeLink(String wicketId) {
 		Link<Object> link = new Link<Object>(wicketId) {
@@ -158,11 +232,11 @@ public class BasePage extends WebPage {
 		};
 	}
 
-	public void sendToUser(UserEntity userEntity) {
+	public void sendToUser(UserEntity userEntity, String message) {
 		IWebSocketConnection connection = getConnection(userEntity);
 		if (connection != null && connection.isOpen()) {
 			try {
-				connection.sendMessage(messages.get(0));
+				connection.sendMessage(message);
 			} catch (IOException e) {}
 		}
 	}
@@ -225,49 +299,40 @@ public class BasePage extends WebPage {
 		};
 	}
 	
-	private boolean show(Class<? extends BasePage> page) {
-		return true;
-	}
-	
 	public String getRole() {
 		return getLoggedUser().getRoleEntity().getRole();
 	}
 	
-	/*
-	 * Custom validation. Why? Because I CAN!!!!
-	 */
-	public List<Object> validateForm(Form<?> form, Object... objects) {
-		List<Object> list = new ArrayList<Object>();
-		String errorMessage = null;
-		Integer counter = 0;
-		for (Object obj : objects) {
-			if (obj == null) {
-				errorMessage = Constants.REQUIRED;
-				break;
-			} else if (obj instanceof String && (errorMessage = checkClass(obj, form, counter)) != null) {
-				break;
+	public List<Object> validateRequsetForm(List<String> fieldsToValidate, RequestEntity requestEntity) {
+		Field[] fields = RequestEntity.class.getDeclaredFields();
+		
+		for (String fieldName : fieldsToValidate) {
+			for (Field field : fields) {
+				if (fieldName.equals(field.getName())) {
+					try {
+						field.setAccessible(true);
+						if (field.get(requestEntity) == null) {
+							return Arrays.asList(new Object[]{fieldName, Constants.REQUIRED});
+						} else if (field.get(requestEntity) instanceof String) {
+							if (field.getName().equals("summary")) {
+								if (checkLength(field.get(requestEntity).toString(), Constants.MIN_LENGTH, 
+										Constants.MAX_LENGTH)) {
+									return Arrays.asList(new Object[]{fieldName, 
+											lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH)});
+								}
+							} else {
+								if (checkLength(field.get(requestEntity).toString(), Constants.MIN_LENGTH, 
+										Constants.MAX_LENGTH_TAREA)) {
+									return Arrays.asList(new Object[]{fieldName, 
+											lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH)});
+								}
+							}
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			counter++;
-		}
-		if (errorMessage == null) {
-			return null;
-		} else {
-			list.add(counter);
-			list.add(errorMessage);
-			return list;
-		}
-	}
-	
-	private String checkClass(Object obj, Form<?> form, Integer index) {
-		if (form.get(index) instanceof TextField) {
-			return checkLength((String) obj, Constants.MIN_LENGTH, Constants.MAX_LENGTH) ? 
-					lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH) : null;
-		} else if (form.get(index) instanceof TextArea) {
-			return checkLength((String) obj, Constants.MIN_LENGTH, Constants.MAX_LENGTH_TAREA) ? 
-					lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH_TAREA) : null;
-		} else if (form.get(index) instanceof PasswordTextField) {
-			return checkLength((String) obj, Constants.MIN_LENGTH, Constants.MAX_LENGTH) ? 
-					lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH) : null;
 		}
 		return null;
 	}
@@ -288,9 +353,8 @@ public class BasePage extends WebPage {
 		return "DOTO LATER: minLength " + minLength + " maxLength " + maxLength;
 	}
 	
-	public void appendJavaScript(AjaxRequestTarget target,  Form<?> form, Object index, Object message) {
-		target.appendJavaScript("appendError('"+ form.get((Integer) index).getMarkupId() 
-				+"','"+message.toString()+"');");
+	public void appendJavaScript(AjaxRequestTarget target, Object id, Object message) {
+		target.appendJavaScript("appendError('"+ id +"','"+message.toString()+"');");
 	}
 	
 	public HelpDeskSession getHDSession() {

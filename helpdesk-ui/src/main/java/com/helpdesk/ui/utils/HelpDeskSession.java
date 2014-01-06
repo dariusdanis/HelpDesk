@@ -22,7 +22,7 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 	private UserService userService;
 	private UserEntity user;
 	
-	private String homePageStatus;
+	private String homePageStatus = Constants.FOCurrent();
 	
 	public HelpDeskSession(Request request) {
 		super(request);
@@ -31,7 +31,8 @@ public class HelpDeskSession extends AuthenticatedWebSession  {
 
 	public boolean authenticate(String email, String password) {
 		user = userService.findByEmail(email);
-		if (user != null && user.getPassword().equals(password)) {
+		if (user != null && user.getPassword().equals(password) 
+				&& user.isActive()) {
 			helpDeskSessions.add(this);
 			return true;
 		}

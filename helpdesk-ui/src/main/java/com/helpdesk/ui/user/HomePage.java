@@ -22,7 +22,6 @@ import com.helpdesk.ui.BasePage;
 import com.helpdesk.ui.SingInPage;
 import com.helpdesk.ui.request.AddRequestPage;
 import com.helpdesk.ui.utils.Constants;
-import com.helpdesk.ui.utils.DataImporter;
 
 public class HomePage extends BasePage {
 	private static final long serialVersionUID = 1L;
@@ -49,7 +48,7 @@ public class HomePage extends BasePage {
 		filterOption = getHDSession().getHomePageStatus();
 		WebMarkupContainer container = initRequsetConteiner("requsetConteiner");
 		ListView<RequestEntity> listView = initRequestTable("repeatingView", getRequestList());
-		add(initFilterOptions("filterOptions", Constants.filterOptions, "filterOption", container, listView));
+		add(initFilterOptions("filterOptions", "filterOption", container, listView));
 		add(initReauestLink("requestLink"));
 		container.add(listView);
 		add(container);
@@ -88,10 +87,10 @@ public class HomePage extends BasePage {
 	}
 
 	private DropDownChoice<String> initFilterOptions(String wicketId,
-			List<String> list, String expression, WebMarkupContainer container,
+			String expression, WebMarkupContainer container,
 			ListView<RequestEntity> listView) {
 		DropDownChoice<String> choice = new DropDownChoice<String>(wicketId,
-				new PropertyModel<String>(this, expression), list) {
+				new PropertyModel<String>(this, expression), initFilterOptionsList()) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -105,26 +104,32 @@ public class HomePage extends BasePage {
 		return choice;
 	}
 	
+	private List<String> initFilterOptionsList() {
+		switch (getRole()) {
+			case "ADMIN":
+				return Constants.filterOptionsAdminAndDirect;
+			case "CLIEN":
+				return Constants.filterOptionsClient;
+			case "ENGIN":
+				return Constants.filterOptionsEngin;
+			case "DIREC":
+				return Constants.filterOptionsAdminAndDirect;
+		}
+		return new ArrayList<String>();
+	}
+
 	private OnChangeAjaxBehavior initChangeBehaviour(final WebMarkupContainer container,
 			final ListView<RequestEntity> listView) {
 		return new OnChangeAjaxBehavior() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			    protected void onUpdate(AjaxRequestTarget target) {
-					getHDSession().setHomePageStatus(filterOption);
-					if (filterOption.equals(Constants.FilterOptions.HISTORY.toString().toLowerCase())) {
-						listView.removeAll();
-						container.removeAll();
-						container.add(initRequestTable("repeatingView", getRequestList()));
-						target.add(container);
-					} else if (filterOption.equals(Constants.FilterOptions.CURRENT.toString().toLowerCase())) {
-						listView.removeAll();
-						container.removeAll();
-						container.add(initRequestTable("repeatingView", getRequestList()));
-						target.add(container);
-					}
-					
+		    protected void onUpdate(AjaxRequestTarget target) {
+				getHDSession().setHomePageStatus(filterOption);
+				listView.removeAll();
+				container.removeAll();
+				container.add(initRequestTable("repeatingView", getRequestList()));
+				target.add(container);
 			}
 			
 		};
@@ -133,22 +138,50 @@ public class HomePage extends BasePage {
 	private List<RequestEntity> getRequestList() {
 		switch (getRole()) {
 		case "ADMIN":
-			return requestService.getAllUnassignedAndStatus(Constants.Status.NOT_ASSIGNED.toString());
-		case "CLIEN":
-			return requestService.getAllByCreator(getLoggedUser());
-		case "ENGIN":
-			if (getHDSession().getHomePageStatus() != null 
-				&& getHDSession().getHomePageStatus().equals(Constants.FilterOptions.HISTORY.toString().toLowerCase())) {
-				return requestService.getAllByEngineerAndNotStatus(getLoggedUser(), Constants.Status.ASSIGNED.toString());
+			if (equalsFOCurrent()) {
+				return requestService.getAllByStatus(Constants.Status.NOT_ASSIGNED.toString());
+			} else if (equalsFOHistory()) {
+				return requestService.getAllByAdminAndNotStatus(getLoggedUser(), 
+						Constants.Status.NOT_ASSIGNED.toString());
 			} else {
-				return requestService.getAllByEngineerAndStatus(getLoggedUser(), Constants.Status.ASSIGNED.toString());
+				return requestService.getAll();
+			}
+		case "CLIEN":
+			if (equalsFOCurrent()) {
+				return requestService.getAllByBelongsTosAndNotStatu(getLoggedUser(), 
+						Constants.Status.SOLVED.toString());
+			} else {
+				return requestService.getAllByBelongsToAndStatus(getLoggedUser(),
+						Constants.Status.SOLVED.toString());
+			}
+		case "ENGIN":
+			if (equalsFOCurrent()) {
+				return requestService.getAllByEngineerAndStatus(getLoggedUser(), 
+						Constants.Status.ASSIGNED.toString());
+			} else {
+				return requestService.getAllByEngineerAndNotStatus(getLoggedUser(), 
+						Constants.Status.ASSIGNED.toString());
 			}
 		case "DIREC":
-			return requestService.getAll();
+			if (equalsFOCurrent()) {
+				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),
+						getLoggedUser());
+			} else if (equalsFOHistory()) {
+				return requestService.getDirectorHistory(getLoggedUser(), Constants.Status.SOLVED.toString(),
+						Constants.Status.ASSIGNED.toString());
+			} else {
+				return requestService.getAll();
+			}
 		}
 		return new ArrayList<RequestEntity>();
 	}
 
+	private boolean equalsFOCurrent(){
+		return getHDSession().getHomePageStatus().equals(Constants.FOCurrent());
+	}
 	
+	private boolean equalsFOHistory(){
+		return getHDSession().getHomePageStatus().equals(Constants.FOHistory());
+	}
 	
 }

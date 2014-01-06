@@ -1,10 +1,13 @@
 package com.helpdesk.ui.request;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -49,21 +52,25 @@ public class AddRequestPage extends BasePage {
 		if (!isSingIn()) {
 			setResponsePage(SingInPage.class);
 			return;
+		} else if (authorize(getLoggedUser())) {
+			setResponsePage(HomePage.class);
+			return;
 		}
 		requestEntity = new RequestEntity();
 		Form<?> form = initForm("requsetForm");
 		form.add(initInputField("summary", "requestEntity.summary"));
 		form.add(initTextArea("requestText", "requestEntity.requestText"));
 		form.add(initTypeDropDown("type", typeService.getAll(), "requestEntity.typeEntity"));
-		form.add(initFacilityDropDown("facility", facilityService.getAllByCompany(
-				getLoggedUser().getCompanyEntity(), 
-				getLoggedUser().getCompanyEntity().getComapanyName().equals(Constants.HPCompany)),
-				"requestEntity.facilityEntity"));
-		form.add(initParentDropDown("parent", requestService.getAllByCreator(getLoggedUser()), 
-				"requestEntity.parentRequsetId"));
+		DropDownChoice<FacilityEntity> facilityDropDown = initFacilityDropDown("facility", "requestEntity.facilityEntity");
+		DropDownChoice<RequestEntity> parentDropDown = initParentDropDown("parent", "requestEntity.parentRequsetId");
+		WebMarkupContainer parentAndFacilityContainer = new WebMarkupContainer("parentAndFacilityContainer");
+		parentAndFacilityContainer.setOutputMarkupId(true);
 		form.add(initClientDropDown("client", userService.findAllByRole(Constants.Roles.CLIEN.toString()), 
-				"requestEntity.creatorEntity"));
+				"requestEntity.requestBelongsTo", parentAndFacilityContainer));
 		form.add(initReceiptDropDown("receipt", Constants.receiptMethodsList, "requestEntity.receiptMethod"));
+		parentAndFacilityContainer.add(facilityDropDown);
+		parentAndFacilityContainer.add(parentDropDown);
+		form.add(parentAndFacilityContainer);
 		add(form);
 	}
 
@@ -73,25 +80,16 @@ public class AddRequestPage extends BasePage {
 			private static final long serialVersionUID = 1L;
 			
 			@Override
-			protected void onSubmit(AjaxRequestTarget target) {
-				List<Object> validationError = validateForm(form, requestEntity.getSummary(),
-						requestEntity.getRequestText(), requestEntity.getTypeEntity(), 
-						requestEntity.getFacilityEntity());
-				
+			protected void onSubmit(AjaxRequestTarget target) {				
+				List<Object> validationError = validateRequsetForm(getFieldToValidate(), requestEntity);
+
 				if (validationError != null) {
-					appendJavaScript(target, form, validationError.get(0), validationError.get(1));
+					appendJavaScript(target, validationError.get(0), validationError.get(1));
 				} else {
-					if (!client()) {
-						if (requestEntity.getCreatorEntity() == null) {
-							appendJavaScript(target, form, 5, Constants.REQUIRED);
-							return;
-						} else if (requestEntity.getReceiptMethod() == null) {
-							appendJavaScript(target, form, 6, Constants.REQUIRED);
-							return;
-						}
-					} else {
-						requestEntity.setCreatorEntity(getLoggedUser());
+					requestEntity.setCreatorEntity(getLoggedUser());
+					if (client()) {
 						requestEntity.setReceiptMethod(Constants.ReceiptMethod.SELF_SERVICE.toString());
+						requestEntity.setRequestBelongsTo(getLoggedUser());
 					}
 					requestEntity.setRequestDate(new Date());
 					requestEntity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
@@ -121,8 +119,16 @@ public class AddRequestPage extends BasePage {
 		return types;
 	}
 	
-	private DropDownChoice<FacilityEntity> initFacilityDropDown(String wicketId,
-			List<FacilityEntity> list, String expression) {
+	private DropDownChoice<FacilityEntity> initFacilityDropDown(String wicketId, String expression) {
+		List<FacilityEntity> list;
+		if (client()) {
+			list = facilityService.getAllByCompany(getLoggedUser().getCompanyEntity());
+		} else if (requestEntity.getRequestBelongsTo() != null) {
+			list = facilityService.getAllByCompany(requestEntity.getRequestBelongsTo().getCompanyEntity());
+		} else {
+			list = new ArrayList<FacilityEntity>();
+		}
+		
 		DropDownChoice<FacilityEntity> types = new DropDownChoice<FacilityEntity>(wicketId,
 				new PropertyModel<FacilityEntity>(this, expression), list) {
 			private static final long serialVersionUID = 1L;
@@ -137,9 +143,9 @@ public class AddRequestPage extends BasePage {
 	}
 	
 	private WebMarkupContainer initClientDropDown(String wicketId,
-			List<UserEntity> list, String expression) {
+			List<UserEntity> list, String expression, WebMarkupContainer parentAndFacilityContainer) {
 		WebMarkupContainer clientConteiner = new WebMarkupContainer("clientConteiner");
-		DropDownChoice<UserEntity> types = new DropDownChoice<UserEntity>(wicketId,
+		DropDownChoice<UserEntity> clients = new DropDownChoice<UserEntity>(wicketId,
 				new PropertyModel<UserEntity>(this, expression), list) {
 			private static final long serialVersionUID = 1L;
 
@@ -148,15 +154,44 @@ public class AddRequestPage extends BasePage {
 				return "";
 			}
 		};
-		types.setOutputMarkupId(true);
-		clientConteiner.add(types);
-		clientConteiner.setVisible(admin());
+		clients.setOutputMarkupId(true);
+		clients.add(initChangeBehaviour(parentAndFacilityContainer));
+		clientConteiner.add(clients);
+		clientConteiner.setVisible(director() || admin());
 		return clientConteiner;
 	}
 	
-	private DropDownChoice<RequestEntity> initParentDropDown(String wicketId,
-			List<RequestEntity> list, String expression) {
-		DropDownChoice<RequestEntity> types = new DropDownChoice<RequestEntity>(wicketId,
+	private OnChangeAjaxBehavior initChangeBehaviour(final WebMarkupContainer parentAndFacilityContainer) {
+		return new OnChangeAjaxBehavior() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				parentAndFacilityContainer.removeAll();
+				DropDownChoice<FacilityEntity> facilityDropDown = initFacilityDropDown("facility", "requestEntity.facilityEntity");
+				DropDownChoice<RequestEntity> parentDropDown = initParentDropDown("parent", "requestEntity.parentRequsetId");
+				
+				parentAndFacilityContainer.add(facilityDropDown);
+				parentAndFacilityContainer.add(parentDropDown);
+				target.add(parentAndFacilityContainer);
+				target.appendJavaScript("refreshSelects('" + facilityDropDown.getMarkupId() + "', '" 
+						+ parentDropDown.getMarkupId() + "');");
+			}
+			
+		};
+	}
+
+	private DropDownChoice<RequestEntity> initParentDropDown(String wicketId, String expression) {
+		List<RequestEntity> list;
+		if (client()) {
+			list = requestService.getAllByCreatOrBelongsTo(getLoggedUser());
+		} else if (requestEntity.getRequestBelongsTo() != null) {
+			list = requestService.getAllByCreatOrBelongsTo(requestEntity.getRequestBelongsTo());
+		} else {
+			list = new ArrayList<RequestEntity>();
+		}
+		
+		DropDownChoice<RequestEntity> parent = new DropDownChoice<RequestEntity>(wicketId,
 				new PropertyModel<RequestEntity>(this, expression), list) {
 			private static final long serialVersionUID = 1L;
 
@@ -165,8 +200,8 @@ public class AddRequestPage extends BasePage {
 				return "";
 			}
 		};
-		types.setOutputMarkupId(true);
-		return types;
+		parent.setOutputMarkupId(true);
+		return parent;
 	}
 	
 	private WebMarkupContainer initReceiptDropDown(String wicketId,
@@ -183,7 +218,7 @@ public class AddRequestPage extends BasePage {
 		};
 		types.setOutputMarkupId(true);
 		receiptConteiner.add(types);
-		receiptConteiner.setVisible(admin());
+		receiptConteiner.setVisible(director() || admin());
 		return receiptConteiner;
 	}
 	
@@ -201,4 +236,17 @@ public class AddRequestPage extends BasePage {
 		 return textAria;
 	}
 
+	private boolean authorize(UserEntity loggedUser) {
+		return loggedUser.getRoleEntity().getRole().equals(Constants.Roles.ENGIN.toString());
+	}
+	
+	private List<String> getFieldToValidate() {
+		if (client()) {
+			return Arrays.asList(new String[]{"summary","typeEntity","facilityEntity","requestText"});
+		} else {
+			return Arrays.asList(new String[]{"summary", "receiptMethod", "typeEntity",
+					"requestBelongsTo", "facilityEntity", "requestText"});
+		}
+	}
+	
 }

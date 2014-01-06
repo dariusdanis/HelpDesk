@@ -1,6 +1,7 @@
 package com.helpdesk.ui.request;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -96,9 +97,11 @@ public class RequestPage extends BasePage {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<Object> validationError = validateForm(form, requestEntity.getRequestSolution());
+				List<Object> validationError = validateRequsetForm(
+						Arrays.asList(new String[]{"requestSolution"}),
+						requestEntity);
 				if (validationError != null) {
-					appendJavaScript(target, form, validationError.get(0), validationError.get(1));
+					appendJavaScript(target, validationError.get(0), validationError.get(1));
 				} else {
 					target.appendJavaScript("$('#modal').modal('show')");
 				}
@@ -116,21 +119,24 @@ public class RequestPage extends BasePage {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
-				if (!client() && !admin()) {
-					List<Object> validationError = validateForm(form, requestEntity.getRequestSolution(),
-							 requestEntity.getTimeSpend(), requestEntity.getWhatWasDone());
+				if (requestEntity.getEngineerEntity() != null && 
+						requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) {
+					
+					List<Object> validationError = validateRequsetForm( 
+							Arrays.asList(new String[]{"requestSolution", "timeSpend", "whatWasDone"}),
+							requestEntity);
 					if (validationError != null) {
-						appendJavaScript(target, form, validationError.get(0), validationError.get(1));
+						appendJavaScript(target, validationError.get(0), validationError.get(1));
 					} else {
 						try {
 							Integer.parseInt(requestEntity.getTimeSpend());
 							requestEntity.setStatus(Constants.Status.SOLVED.toString());
-							requestService.merge(requestEntity);
-							notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getCreatorEntity()}), Constants.REQUEST_SOLVE);
-							sendToUser(requestEntity.getCreatorEntity());
+							requestEntity.setSolveDate(new Date());
+							notificationHandler(requestService.merge(requestEntity), 
+									Constants.REQUEST_SOLVE);
 							setResponsePage(HomePage.class);
 						} catch (Exception e) {
-							appendJavaScript(target, form, 1, "TODO: Bad time!");
+							appendJavaScript(target, "timeSpend" , "Bad time!");
 						}
 					}
 				}
@@ -183,9 +189,9 @@ public class RequestPage extends BasePage {
 	}
 	
 	private String getClientInfo(RequestEntity requestEntity) {
-		String clientName = requestEntity.getCreatorEntity().getName();
-		String clientNumber = requestEntity.getCreatorEntity().getPhone();
-		String clientEmail = requestEntity.getCreatorEntity().getEmail();
+		String clientName = requestEntity.getRequestBelongsTo().getName();
+		String clientNumber = requestEntity.getRequestBelongsTo().getPhone();
+		String clientEmail = requestEntity.getRequestBelongsTo().getEmail();
 		return requestEntity.getReceiptMethod().equals(Constants.ReceiptMethod.SELF_SERVICE.toString()) ?  clientName : 
 			requestEntity.getReceiptMethod().equals(Constants.ReceiptMethod.EMAIL.toString()) ? clientName + " (phone: "+ clientNumber + ")" :
 				clientName + " (email: " + clientEmail +")";
@@ -193,7 +199,8 @@ public class RequestPage extends BasePage {
 	
 	private boolean authorize(RequestEntity requestEntity, UserEntity userEntity) {
 		if (requestEntity.getCreatorEntity() != null && 
-				requestEntity.getCreatorEntity().getId() == userEntity.getId()) {
+				requestEntity.getCreatorEntity().getId() == userEntity.getId() ||
+				requestEntity.getRequestBelongsTo().getId() == userEntity.getId()) {
 			return true;
 		} else if (admin() || director()) {
 			return true;
@@ -223,7 +230,8 @@ public class RequestPage extends BasePage {
 				requestService.merge(requestEntity);
 				notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getAdministratorEntity()}),
 						Constants.BACK_TO_ADMIN);
-				sendToUser(requestEntity.getAdministratorEntity());
+				sendToUser(requestEntity.getAdministratorEntity(),
+						Constants.BACK_TO_ADMIN);
 				setResponsePage(HomePage.class);
 			}
 		};
@@ -245,10 +253,7 @@ public class RequestPage extends BasePage {
 			@Override
 			public void onClick() {
 				requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
-				requestService.merge(requestEntity);
-				notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getCreatorEntity()}),
-						Constants.WOUNT_SOLVE);
-				sendToUser(requestEntity.getCreatorEntity());
+				notificationHandler(requestService.merge(requestEntity), Constants.WOUNT_SOLVE);
 				setResponsePage(HomePage.class);
 			}
 			
@@ -256,6 +261,22 @@ public class RequestPage extends BasePage {
 		
 		link.setVisible(engineer() || director());
 		return link;
+	}
+	
+	protected void notificationHandler(RequestEntity requestEntity, String message) {
+		if (requestEntity.getCreatorEntity().getId() == requestEntity.getRequestBelongsTo().getId()) {
+			sendNotifications(new UserEntity[]{requestEntity.getCreatorEntity()}, message);
+			sendToUser(requestEntity.getCreatorEntity(), message);
+		} else {
+			sendNotifications(new UserEntity[]{requestEntity.getCreatorEntity(), 
+					requestEntity.getRequestBelongsTo()}, message);
+			sendToUser(requestEntity.getCreatorEntity(), message);
+			sendToUser(requestEntity.getRequestBelongsTo(), message);
+		}
+	}
+
+	private void sendNotifications(UserEntity[] entities, String message) {
+		notificationService.merge(requestEntity, Arrays.asList(entities), message);
 	}
 	
 	private WebMarkupContainer initEngineerConteiner(String wicketId, RequestEntity requestEntity) {
@@ -320,8 +341,10 @@ public class RequestPage extends BasePage {
 					entity.setAdministratorEntity(((HelpDeskSession)getSession()).getUser());
 					if (userEntity != null) {
 						entity.setStatus(Constants.Status.ASSIGNED.toString());
-						notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{userEntity}), Constants.NEW_ASSIGMENT);
-						sendToUser(userEntity);
+						if (userEntity.getId() != getLoggedUser().getId()) {
+							notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{userEntity}), Constants.NEW_ASSIGMENT);
+							sendToUser(userEntity, Constants.NEW_ASSIGMENT);
+						}
 					} else {
 						entity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
 					}

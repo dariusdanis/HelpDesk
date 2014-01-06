@@ -1,5 +1,7 @@
 package com.helpdesk.ui.user;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -66,18 +68,18 @@ public class AddUserPage extends BasePage {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
-				List<Object> validationError = validateForm(form, userEntity.getRoleEntity(), 
-						userEntity.getCompanyEntity(), userEntity.getName(), userEntity.getSurname(), 
-						userEntity.getEmail(), userEntity.getPhone(), userEntity.getPassword());
+				
+				List<Object> validationError = validateUserForm(userEntity);
 
 				if (validationError != null) {
-					appendJavaScript(target, form, validationError.get(0), validationError.get(1));
-				} else if (validateUserEntity(userEntity, target, form)) {
+					appendJavaScript(target, validationError.get(0), validationError.get(1));
+				} else {
 					userService.merge(userEntity);
 					setResponsePage(HomePage.class);
 				}
 				
 			}
+
 		});
 		
 		return form;
@@ -126,25 +128,41 @@ public class AddUserPage extends BasePage {
 	return roles;
 	}
 	
-	private boolean validateUserEntity(UserEntity entity, AjaxRequestTarget target, Form<?> form) {
-		if (!userEntity.getEmail().matches(EmailAddressValidator.getInstance().getPattern().toString())) {
-			appendJavaScript(target, form, 4, Constants.BAD_EMAIL);
-			return false;
-		} else if (userService.findByEmail(userEntity.getEmail()) != null) {
-			appendJavaScript(target, form, 4, Constants.TAKEN_EMAIL);
-			return false;
-		} else if (userEntity.getPhone().length() == 8) {
-			try {
-				Integer.parseInt(userEntity.getPhone());
-				return true;
-			} catch (Exception e) {
-				appendJavaScript(target, form, 5, Constants.BAD_PHONE);
-				return false;
+	private List<Object> validateUserForm(UserEntity userEntity) {
+		List<String> list = Arrays.asList(new String[]{"roleEntity", 
+				"companyEntity", "name", "surname", "email", "phone", "password"});
+		Field[] fields = UserEntity.class.getDeclaredFields();
+		
+		for (String fieldName : list) {
+			for (Field field : fields) {
+				if (fieldName.equals(field.getName())) {
+					try {
+						field.setAccessible(true);
+						if (field.get(userEntity) == null) {
+							return Arrays.asList(new Object[]{fieldName, Constants.REQUIRED});
+						}
+						if (fieldName.equals("email")) {
+							if (!userEntity.getEmail().matches(EmailAddressValidator.getInstance().getPattern().toString())) {
+								return Arrays.asList(new Object[]{"email", Constants.BAD_EMAIL});
+							}
+						} else if (fieldName.equals("phone")) {
+							if (userEntity.getPhone().length() != 9) {
+								return Arrays.asList(new Object[]{"phone", Constants.BAD_PHONE});
+							} else {
+								try {
+									Long.parseLong(userEntity.getPhone());
+								} catch (Exception e) {
+									return Arrays.asList(new Object[]{"phone", Constants.BAD_PHONE});
+								}
+							}
+						}
+					} catch (IllegalArgumentException | IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-		} else {
-			appendJavaScript(target, form, 5, Constants.BAD_PHONE);
-			return false;
 		}
+		return null;
 	}
 	
 }

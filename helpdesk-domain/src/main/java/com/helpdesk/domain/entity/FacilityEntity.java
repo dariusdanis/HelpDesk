@@ -2,6 +2,7 @@ package com.helpdesk.domain.entity;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,8 +15,15 @@ public class FacilityEntity {
 	@Id
 	@GeneratedValue
 	private int id;
-	
+
+	@Column(nullable=false)
 	private String name;
+	
+	@Column(nullable=false)
+	private String lhInc;
+	
+	@Column(nullable=false)
+	private String lhReq;
 	
 	@OneToMany(targetEntity = CompanyFacilityEntity.class, fetch=FetchType.LAZY, mappedBy = "companyEntity")
 	private List<CompanyFacilityEntity> companies;
@@ -23,8 +31,7 @@ public class FacilityEntity {
 	@OneToMany(targetEntity = RequestEntity.class, fetch=FetchType.LAZY, mappedBy = "facilityEntity")
 	private List<RequestEntity> requests;
 	
-	public FacilityEntity() {
-	}
+	public FacilityEntity() {}
 	
 	public FacilityEntity(String name) {
 		this.name = name;
@@ -58,6 +65,30 @@ public class FacilityEntity {
 		this.name = name;
 	}
 	
+	public String getLhInc() {
+		return lhInc;
+	}
+
+	public void setLhInc(String lhInc) {
+		this.lhInc = lhInc;
+	}
+
+	public String getLhReq() {
+		return lhReq;
+	}
+
+	public void setLhReq(String lhReq) {
+		this.lhReq = lhReq;
+	}
+
+	public List<RequestEntity> getRequests() {
+		return requests;
+	}
+
+	public void setRequests(List<RequestEntity> requests) {
+		this.requests = requests;
+	}
+
 	@Override
 	public String toString() {
 		return name;

@@ -133,8 +133,7 @@ public class DataImporter {
 			String employeeId = getStringValueFromCell(row.getCell(0));
 			String name = getStringValueFromCell(row.getCell(1));
 
-			FacilityEntity facilityEntity = facilityService
-					.merge(new FacilityEntity(name));
+			FacilityEntity facilityEntity = facilityService.merge(new FacilityEntity(name));
 			facilityHashmap.put(employeeId, facilityEntity.getId());
 
 			System.out.println("Inserting: " + employeeId + " " + name);

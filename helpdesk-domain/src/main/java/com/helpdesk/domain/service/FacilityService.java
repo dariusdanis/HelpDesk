@@ -17,10 +17,7 @@ public class FacilityService {
 	private FacilityDao facilityDao;
 
 	@Transactional
-	public List<FacilityEntity> getAllByCompany(CompanyEntity company, boolean hd) {
-		if (hd) {
-			return facilityDao.getAll();
-		}
+	public List<FacilityEntity> getAllByCompany(CompanyEntity company) {
 		return facilityDao.getAllByCompany(company);
 	}
 	
@@ -28,4 +25,10 @@ public class FacilityService {
 	public FacilityEntity merge(FacilityEntity facilityEntity) {
 		return facilityDao.merge(facilityEntity);
 	}
+	
+	@Transactional
+	public FacilityEntity getById(int id) {
+		return facilityDao.getById(id);
+	}
+	
 }

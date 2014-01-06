@@ -7,43 +7,47 @@
             <div class="row-fluid form-wrapper">
                 <div class="container">
                     <form class="inline-input" wicket:id="requsetForm" id="requsetForm">
-                       <div class="span5 field-box">
+                       <div class="span5 field-box" id="summary">
                            <label>Summary:</label>
                            <input wicket:id="summary" class="span5" type="text" maxlength="40"/>
                        </div>
                         <div wicket:id="receiptConteiner" class="span12 field-box">
                             <label>Receipt Method:</label>
-                            <div style="margin-top: 7px;">
+                            <div style="margin-top: 7px;" id="receiptMethod">
                                 <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="receipt"></select>
                             </div>
                         </div>
                         <div class="span12 field-box">
                             <label>Type:</label>
-                            <div style="margin-top: 7px;">
+                            <div style="margin-top: 7px;" id="typeEntity">
                                 <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="type"></select>
                             </div>
                         </div>
                         <div wicket:id="clientConteiner" class="span12 field-box">
                             <label>Client:</label>
-                            <div style="margin-top: 7px;">
+                            <div style="margin-top: 7px;" id="requestBelongsTo">
                                 <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="client"></select>
                             </div>
                         </div>
-                        <div class="span12 field-box">
-                            <label>Facility:</label>
-                            <div style="margin-top: 7px;">
-                                <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="facility"></select>
-                            </div>
-                        </div>
-                        <div class="span12 field-box">
-                            <label>Parent:</label>
-                            <div style="margin-top: 7px;">
-                                <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="parent"></select>
-                            </div>
-                        </div>
+                        <wicket:container wicket:id="parentAndFacilityContainer">
+	                        <div class="span12 field-box">
+	                            <label>Facility:</label>
+	                            <div id="facilityEntity" style="margin-top: 7px;">
+	                                <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="facility"></select>
+	                            </div>
+	                        </div>
+	                        <div class="span12 field-box">
+	                            <label>Parent:</label>
+	                            <div style="margin-top: 7px;">
+	                                <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="parent"></select>
+	                            </div>
+	                        </div>
+                        </wicket:container>
                         <div class="span12 field-box">
                             <label>Issue:</label>
-                            <textarea wicket:id="requestText" class="span8"  maxlength="9000"></textarea>
+                            <div id="requestText">
+                            	<textarea wicket:id="requestText" class="span8"  maxlength="9000"></textarea>
+                            </div>
                         </div>
                         
                         <div class="span11 field-box actions">
@@ -54,21 +58,31 @@
             </div>
         </div>
     </div>
-  
+
     <script type="text/javascript">
-    
-    $(document).ready(function(){
-   	    $("#requsetForm").validationEngine();
-    });
-           
-    function appendError(conteinerId, message) {
-        $('#'+conteinerId).validationEngine('showPrompt', message, 'error');
-    } 
-    
-    $(".select2").select2({
-        maximumSelectionSize: 1
-    });
-    
+	    
+	    $(document).ready(function(){
+	   	    $("#requsetForm").validationEngine();
+	    });
+	           
+	    function appendError(conteinerId, message) {
+	    	field = $('#'+conteinerId).find('input[type=text],textarea,select').filter(':visible:first');
+	    	field.validationEngine('showPrompt', message, 'error');
+	    } 
+	    
+	    $(".select2").select2({
+	        maximumSelectionSize: 1
+	    });
+		
+	    function refreshSelects(select1, select2) {
+	    	$("#" + select1).select2({
+	    		maximumSelectionSize: 1
+	    	});
+	    	$("#" + select2).select2({
+	    		maximumSelectionSize: 1
+	    	});
+	    }
+	    
    </script>
    
 </wicket:extend>

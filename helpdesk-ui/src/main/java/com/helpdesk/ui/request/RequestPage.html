@@ -4,19 +4,6 @@
 		<div class="row-fluid header">
 		    <h3>MA-15</h3>
 		</div>
-		<div class="right-float" style="margin-right: 50px;">
-		<div wicket:id="requestOptions">
-			<div class="btn-group">
-	            <button class="btn glow dropdown-toggle" data-toggle="dropdown">
-	                <span class="icon-cog"></span>
-	            </button>
-	            <ul class="dropdown-menu">
-					<li><a wicket:id="wountSolve" href="#">Can't Solve</a></li>
-					<li><a wicket:id="backToAdmin" href="#">Back to Administrator</a></li>
-	            </ul>
-			</div>
-		</div>
-		</div>
 			<div class="row-fluid form-wrapper">
                 <div class="container">
                     <div class="inline-input" >
@@ -52,46 +39,36 @@
                             <textarea wicket:id="issue" class="span8"  maxlength="9000" readonly></textarea>
                         </div>
                     </div>
-                    <form wicket:id="requsetForm" class="inline-input" id="requsetForm">
-                        <div class="span12 field-box">
-                            <label>Solution:</label>
-                            <div id="requestSolution">
-                            	<textarea wicket:id="solution" class="span8"  maxlength="9000"></textarea>
-                            </div>
-                        </div>
-                         <div wicket:id="validateAndShowModalConteiner" class="span11 field-box actions">
-                            <button class="btn-glow primary" wicket:id="validateAndShowModal">Solve</button>
-                        </div>
-						<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-						  <div class="modal-dialog">
-						    <div class="modal-content">
-						      <div class="modal-header">
-						        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-						      </div>
-						      <div class="modal-body">
-				                <div class="span5 field-box">
-                                    <label>Time spend (min):</label>
-                                    <div id="timeSpend">
-                                    	<input wicket:id="timeSpend" class="span4" type="text" />
-                                    </div>
-                                </div>
-                                <div class="span5 field-box">
-                                    <label>What was done:</label>
-                                    <div id="whatWasDone">
-                                    	<textarea wicket:id="whatWasDone" class="was-done" maxlength="9000"></textarea>
-                                	</div>
-                                </div>
-						      </div>
-						      <div class="modal-footer">
-						        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						        <button type="submit" class="btn btn-primary">Confirm</button>
-						      </div>
-						    </div>
-						  </div>
-						</div>
-                    </form>
                 </div>
+            </div>
+            <div class="row-fluid form-wrapper">
+                <div class="container">
+                    <div class="inline-input" >
+			            <form wicket:id="requsetForm" id="requsetForm">
+			            	<div class="span12 field-box" wicket:id="actionConteiner">
+								<label>Action:</label>
+								<div id="action" style="margin-top: 7px;">
+								    <select style="width: 300px;" multiple="multiple" class="select2" wicket:id="action"></select>
+								</div>
+			               </div>
+			               <div class="span5 field-box" id="time" wicket:id="timeConteiner">
+			                    <label>Time spend:</label>
+			                    <div id="time">
+			                    	<input wicket:id="time" class="span5" type="text" maxlength="40"/>
+			                    </div>
+			               </div>
+			               <div class="span12 field-box">
+			                     <label>What was done:</label>
+			                     <div id="whatWasDone">
+			                     	<textarea wicket:id="whatWasDone" class="span8"  maxlength="9000"></textarea>
+			                     </div>
+			               </div>
+			               <div class="span11 field-box actions" wicket:id="subbmitConteiner">
+			               		<button type="submit" class="btn-glow primary">Submit</button>
+			               </div>
+			            </form>
+		            </div>
+	            </div>
             </div>
 	</div>
 </div>

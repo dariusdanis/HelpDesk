@@ -198,7 +198,7 @@ public class HomePage extends BasePage {
 
 			@Override
 		    protected void onUpdate(AjaxRequestTarget target) {
-				getHDSession().setHomePageStatus(filterOption);
+				getHDSession().setHomePageStatus(filterOption.toLowerCase());
 				listView.removeAll();
 				container.removeAll();
 				pageConteiner.removeAll();
@@ -253,7 +253,9 @@ public class HomePage extends BasePage {
 						Constants.Status.ASSIGNED.toString(), from);
 			}
 		case "DIREC":
+			System.out.println(filterOption);
 			if (equalsFOCurrent()) {
+				System.out.println(filterOption);
 				totalRequest = requestService.getAllByStatusOrAssignetToUserCount(Constants.Status.NOT_ASSIGNED.toString(),
 						getLoggedUser());
 				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),

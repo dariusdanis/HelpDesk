@@ -151,7 +151,8 @@ public class RequestDaoJpa implements RequestDao {
 	@Override
 	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.engineerEntity.id = :id OR r.status = :status", RequestEntity.class);
+				"(r.engineerEntity.id = :id AND r.status != 'SOLVED')  OR " +
+				"(r.status = :status)", RequestEntity.class);
 		query.setParameter("status", status);
 		query.setParameter("id", user.getId());
 		query.setMaxResults(MAX_REZULT);
@@ -246,7 +247,8 @@ public class RequestDaoJpa implements RequestDao {
 	@Override
 	public Long getAllByStatusOrAssignetToUserCount(String status, UserEntity user) {
 		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
-				" r.engineerEntity.id = :id OR r.status = :status", Long.class);
+				" (r.engineerEntity.id = :id AND r.status != 'SOLVED') OR " +
+				"(r.status = :status)", Long.class);
 		query.setParameter("status", status);
 		query.setParameter("id", user.getId());
 		return query.getSingleResult();

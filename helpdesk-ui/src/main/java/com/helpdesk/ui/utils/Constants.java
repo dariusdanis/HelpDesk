@@ -21,7 +21,8 @@ public class Constants {
 	public static List<String> filterOptionsEngin = Arrays.asList(new String[] {FilterOptions.CURRENT.toString().toLowerCase(),
 			FilterOptions.HISTORY.toString().toLowerCase()});
 	
-	
+	public static List<String> ACTIONS_ENG = Arrays.asList(new String[] {"Back To Administration!", "Solved!", "Woun't Solve!"});
+	public static List<String> ACTIONS_ADM = Arrays.asList(new String[] {"Solved!", "Woun't Solve!"});
 	
 	public static final int MIN_LENGTH = 1;
 	public static final int MAX_LENGTH = 40;

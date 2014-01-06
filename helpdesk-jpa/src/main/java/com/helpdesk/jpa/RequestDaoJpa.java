@@ -19,6 +19,8 @@ import com.helpdesk.domain.entity.UserEntity;
 @Repository
 public class RequestDaoJpa implements RequestDao {
 
+	private final static int MAX_REZULT = 2;
+	
 	@PersistenceContext
 	private EntityManager em;
 	
@@ -28,9 +30,11 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAll() {
+	public List<RequestEntity> getAll(int from) {
 		 TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r",
 				 RequestEntity.class);
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -72,10 +76,12 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByStatus(String status) {
+	public List<RequestEntity> getAllByStatus(String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				"r.status = :status", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -106,11 +112,13 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status) {
+	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				" r.administratorEntity.id = :id AND r.status != :status", RequestEntity.class);
 		query.setParameter("status", status);
 		query.setParameter("id", user.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -161,6 +169,30 @@ public class RequestDaoJpa implements RequestDao {
 		query.setParameter("startDate", startDate, TemporalType.TIMESTAMP);
 		query.setParameter("endDate", endDate, TemporalType.TIMESTAMP);
 		return query.getResultList();
+	}
+
+	@Override
+	public Long getAllByStatusCount(String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				"r.status = :status", Long.class);
+		query.setParameter("status", status);
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByAdminAndNotStatusCount(UserEntity user, String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				" r.administratorEntity.id = :id AND r.status != :status", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("id", user.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllCount() {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r",
+				Long.class);
+		return query.getSingleResult();
 	}
 	
 }

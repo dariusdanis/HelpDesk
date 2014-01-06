@@ -5,7 +5,9 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -37,6 +39,10 @@ public class HomePage extends BasePage {
 	
 	private String filterOption;
 	
+	private Long totalRequest;
+	
+	private int pageId;
+	
 	@Override
 	protected void onInitialize() {
 		super.onInitialize();
@@ -46,12 +52,79 @@ public class HomePage extends BasePage {
 		}
 		
 		filterOption = getHDSession().getHomePageStatus();
-		WebMarkupContainer container = initRequsetConteiner("requsetConteiner");
-		ListView<RequestEntity> listView = initRequestTable("repeatingView", getRequestList());
-		add(initFilterOptions("filterOptions", "filterOption", container, listView));
+		WebMarkupContainer requsetConteiner = initConteiner("requsetConteiner");
+		WebMarkupContainer pageConteiner = initConteiner("pageConteiner");
+		ListView<RequestEntity> listView = initRequestTable("repeatingView", getRequestList(0));
+		add(initFilterOptions("filterOptions", "filterOption", requsetConteiner, listView, pageConteiner));
 		add(initReauestLink("requestLink"));
-		container.add(listView);
-		add(container);
+		pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 
+				pageConteiner, listView));
+		requsetConteiner.add(listView);
+		add(requsetConteiner);
+		add(pageConteiner);
+	}
+
+	private ListView<String> initPaging(String wicketId, Long totalRequest, 
+			final WebMarkupContainer requsetConteiner, final WebMarkupContainer pageConteiner,
+			final ListView<RequestEntity> requestlistView) {
+		ListModel<String> requsetModel = new ListModel<String>(initList(totalRequest));
+		ListView<String> listView =  new ListView<String>(wicketId, requsetModel) {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void populateItem(ListItem<String> item) {
+				AjaxLink<Object> ajaxLink = initLinkToPage("linkToPage", item.getModel().getObject(), 
+						requsetConteiner, requestlistView, pageConteiner);
+				ajaxLink.add(new Label("pageNumber", 1 + Integer.valueOf(item.getModel().getObject())));
+				item.add(ajaxLink);
+			}
+
+		};
+		listView.setOutputMarkupId(true);
+		return listView;
+	}
+
+	protected AjaxLink<Object> initLinkToPage(String wicketId, final String page,
+			final WebMarkupContainer requsetConteiner, final ListView<RequestEntity> requestlistView,
+			final WebMarkupContainer pageConteiner) {
+		AjaxLink<Object> ajaxLink = new AjaxLink<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				if (pageId != Integer.valueOf(page)) {
+					pageId = Integer.valueOf(page);
+					requsetConteiner.removeAll();
+					requestlistView.removeAll();
+					ListView<RequestEntity> listView = initRequestTable("repeatingView", 
+							getRequestList((Integer.valueOf(page)) * 2));
+					requsetConteiner.add(listView);
+					pageConteiner.removeAll();
+					pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 	
+							pageConteiner, listView));
+					target.add(requsetConteiner);
+					target.add(pageConteiner);
+				}
+			}
+		};
+		return ajaxLink;
+	}
+
+	private List<String> initList(Long totalRequest) {
+		List<String> list = new ArrayList<String>();
+		int counter = 0;
+		int from = pageId;
+		int to = totalRequest.intValue() / 2;
+		to = (totalRequest.intValue() % 2) == 0 ? to : ++to;
+		
+		for (int i = from; i < to; i++) {
+			list.add(String.valueOf(i));
+			counter++;
+			if (counter == 5) {
+				break;
+			}
+		}
+		return list;
 	}
 
 	private Link<Object> initReauestLink(String wicketId) {
@@ -65,7 +138,7 @@ public class HomePage extends BasePage {
 		};
 	}
 
-	private WebMarkupContainer initRequsetConteiner(String wicketId) {
+	private WebMarkupContainer initConteiner(String wicketId) {
 		WebMarkupContainer containe = new WebMarkupContainer(wicketId);
 		containe.setOutputMarkupId(true);
 		return containe;
@@ -88,7 +161,7 @@ public class HomePage extends BasePage {
 
 	private DropDownChoice<String> initFilterOptions(String wicketId,
 			String expression, WebMarkupContainer container,
-			ListView<RequestEntity> listView) {
+			ListView<RequestEntity> listView, WebMarkupContainer pageConteiner) {
 		DropDownChoice<String> choice = new DropDownChoice<String>(wicketId,
 				new PropertyModel<String>(this, expression), initFilterOptionsList()) {
 			private static final long serialVersionUID = 1L;
@@ -100,7 +173,7 @@ public class HomePage extends BasePage {
 		};
 		
 		choice.setOutputMarkupId(true);
-		choice.add(initChangeBehaviour(container, listView));
+		choice.add(initChangeBehaviour(container, listView, pageConteiner));
 		return choice;
 	}
 	
@@ -119,7 +192,7 @@ public class HomePage extends BasePage {
 	}
 
 	private OnChangeAjaxBehavior initChangeBehaviour(final WebMarkupContainer container,
-			final ListView<RequestEntity> listView) {
+			final ListView<RequestEntity> listView, final WebMarkupContainer pageConteiner) {
 		return new OnChangeAjaxBehavior() {
 			private static final long serialVersionUID = 1L;
 
@@ -128,23 +201,32 @@ public class HomePage extends BasePage {
 				getHDSession().setHomePageStatus(filterOption);
 				listView.removeAll();
 				container.removeAll();
-				container.add(initRequestTable("repeatingView", getRequestList()));
+				pageConteiner.removeAll();
+				ListView<RequestEntity> requestlistView = initRequestTable("repeatingView", getRequestList(0));
+				pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, container, 
+						pageConteiner, requestlistView));
+				container.add(requestlistView);
 				target.add(container);
+				target.add(pageConteiner);
 			}
 			
 		};
 	}
 	
-	private List<RequestEntity> getRequestList() {
+	private List<RequestEntity> getRequestList(int from) {
 		switch (getRole()) {
 		case "ADMIN":
 			if (equalsFOCurrent()) {
-				return requestService.getAllByStatus(Constants.Status.NOT_ASSIGNED.toString());
+				totalRequest = requestService.getAllByStatusCount(Constants.Status.NOT_ASSIGNED.toString());
+				return requestService.getAllByStatus(Constants.Status.NOT_ASSIGNED.toString(), from);
 			} else if (equalsFOHistory()) {
-				return requestService.getAllByAdminAndNotStatus(getLoggedUser(), 
+				totalRequest = requestService.getAllByAdminAndNotStatusCount(getLoggedUser(), 
 						Constants.Status.NOT_ASSIGNED.toString());
+				return requestService.getAllByAdminAndNotStatus(getLoggedUser(), 
+						Constants.Status.NOT_ASSIGNED.toString(), from);
 			} else {
-				return requestService.getAll();
+				totalRequest = requestService.getAllCount();
+				return requestService.getAll(from);
 			}
 		case "CLIEN":
 			if (equalsFOCurrent()) {
@@ -170,7 +252,7 @@ public class HomePage extends BasePage {
 				return requestService.getDirectorHistory(getLoggedUser(), Constants.Status.SOLVED.toString(),
 						Constants.Status.ASSIGNED.toString());
 			} else {
-				return requestService.getAll();
+				return requestService.getAll(from);
 			}
 		}
 		return new ArrayList<RequestEntity>();

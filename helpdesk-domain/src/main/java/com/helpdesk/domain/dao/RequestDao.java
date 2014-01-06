@@ -10,7 +10,7 @@ public interface RequestDao {
 	
 	RequestEntity merge (RequestEntity requestEntity);
 	
-	List<RequestEntity> getAll();
+	List<RequestEntity> getAll(int from);
 	
 	List<RequestEntity> getAllByCreatOrBelongsTo(UserEntity userEntity);
 
@@ -22,13 +22,13 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status);
 
-	List<RequestEntity> getAllByStatus(String status);
+	List<RequestEntity> getAllByStatus(String status, int from);
 
 	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status);
 	
 	List<Integer> getTopThree();
 	
-	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status);
+	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status, int from);
 
 	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status);
 
@@ -39,5 +39,11 @@ public interface RequestDao {
 	List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned);
 	
 	List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate);
+	
+	Long getAllByStatusCount(String status);
+	
+	Long getAllByAdminAndNotStatusCount(UserEntity user, String status);
+	
+	Long getAllCount();
 	
 }

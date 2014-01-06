@@ -27,8 +27,8 @@ public class RequestService {
 	}
 	
 	@Transactional
-	public List<RequestEntity> getAll() {
-		return requsetDao.getAll();
+	public List<RequestEntity> getAll(int from) {
+		return requsetDao.getAll(from);
 	}
 	
 	@Transactional
@@ -58,8 +58,8 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByStatus(String status) {
-		return requsetDao.getAllByStatus(status);
+	public List<RequestEntity> getAllByStatus(String status, int from) {
+		return requsetDao.getAllByStatus(status, from);
 	}
 
 	@Transactional
@@ -73,8 +73,8 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity admin, String status) {
-		return requsetDao.getAllByAdminAndNotStatus(admin, status);
+	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity admin, String status, int from) {
+		return requsetDao.getAllByAdminAndNotStatus(admin, status, from);
 	}
 
 	@Transactional
@@ -92,14 +92,15 @@ public class RequestService {
 		return requsetDao.getAllByStatusOrAssignetToUser(status, user);
 	}
 
+	@Transactional
 	public List<RequestEntity> getDirectorHistory(UserEntity director,
 			String solved, String assigned) {
 		return requsetDao.getDirectorHistory(director, solved, assigned);
 	}
 	
 	@Transactional
-	public List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate) {
-		List<RequestEntity> entities = new ArrayList<RequestEntity>();
+	public ArrayList<List<Object>> getAllOverDoRequest(Date startDate, Date endDate) {
+		ArrayList<List<Object>> entities = new ArrayList<List<Object>>();
 		List<RequestEntity> allEntities = requsetDao.getAllOverDoRequest(startDate, endDate);
 		Calendar cal = Calendar.getInstance();
 		System.out.println(allEntities.size());
@@ -116,18 +117,36 @@ public class RequestService {
 					cal.get(Calendar.MINUTE));
 			
 			Minutes diff = Minutes.minutesBetween(createDateDT, solveDateDT);
-			int diffInteger = Integer.valueOf(diff.toString().substring(2, diff.toString().length() - 1));
-			
+			Integer diffInteger = Integer.valueOf(diff.toString().substring(2, diff.toString().length() - 1));
+			List<Object> list = new ArrayList<Object>();
 			if (entity.getTypeEntity().getType().equals("REQ")) {
 				if ((diffInteger / 60) >= Integer.valueOf(entity.getFacilityEntity().getLhReq())) {
-					entities.add(entity);
+					list.add(entity);
+					list.add(diffInteger);
+					entities.add(list);
 				}
 			} else {
 				if ((diffInteger / 60) >= Integer.valueOf(entity.getFacilityEntity().getLhInc())) {
-					entities.add(entity);
+					list.add(entity);
+					list.add(diffInteger);
+					entities.add(list);
 				}
 			}
 		}
 		return entities;
+	}
+	@Transactional
+	public Long getAllByStatusCount(String status) {
+		return requsetDao.getAllByStatusCount(status);
+	}
+	
+	@Transactional
+	public Long getAllByAdminAndNotStatusCount(UserEntity user, String status) {
+		return requsetDao.getAllByAdminAndNotStatusCount(user, status);
+	}
+	
+	@Transactional
+	public Long getAllCount() {
+		return requsetDao.getAllCount();
 	}
 }

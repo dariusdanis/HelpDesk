@@ -1,5 +1,7 @@
 package com.helpdesk.ui.user;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,7 +33,7 @@ public class RequestsListItemPanel extends Panel {
 		super.onInitialize();
 		add(initLink("requstId", "label", requestEntity.getId()));
 		add(new Label("summary", requestEntity.getSummary()));
-		add(new Label("date", requestEntity.getRequestDate()));
+		add(new Label("date", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(requestEntity.getRequestDate())));
 		add(new Label("type", requestEntity.getTypeEntity().getType()));
 		add(new Label("assigned", requestEntity.getEngineerEntity() == null ? "-" : 
 			requestEntity.getEngineerEntity().toString()));

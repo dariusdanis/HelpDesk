@@ -112,18 +112,38 @@ public class HomePage extends BasePage {
 
 	private List<String> initList(Long totalRequest) {
 		List<String> list = new ArrayList<String>();
-		int counter = 0;
-		int from = pageId;
-		int to = totalRequest.intValue() / 2;
-		to = (totalRequest.intValue() % 2) == 0 ? to : ++to;
+		int pageRadius = 3;
+		int perPage = 2;
+		int currentPage = pageId + 1;
+		int totalPages = totalRequest.intValue() / perPage;
+		totalPages = (totalRequest.intValue() % 2) == 0 ? totalPages : ++totalPages;
 		
-		for (int i = from; i < to; i++) {
-			list.add(String.valueOf(i));
-			counter++;
-			if (counter == 5) {
-				break;
+		int rangeFrom;
+		int rangeTo;
+		
+		int toAdd = 0;
+		int toSub = 0;
+		
+		if (currentPage < pageRadius) {
+			rangeFrom = 1;
+			toAdd = pageRadius - currentPage;
+		} else {
+			rangeFrom = currentPage - pageRadius + 1;
+		}
+		
+		if (currentPage > totalPages - pageRadius) {
+			rangeTo = totalPages;
+			toSub = totalPages - pageRadius - currentPage + 1;
+		} else {
+			rangeTo = currentPage + pageRadius - 1;
+		}
+
+		for (int i = rangeFrom + toSub; i <= rangeTo + toAdd; i++) {
+			if (i >= 1 && i <= totalPages) {
+		    	list.add(String.valueOf(i - 1));
 			}
 		}
+		
 		return list;
 	}
 

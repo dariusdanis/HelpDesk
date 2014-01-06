@@ -242,6 +242,7 @@ textarea {
 	text-align: left !important;
 	background: rgba(255, 255, 255, 0.20);
     border: none;	
+    display: none;
 }
 
 
@@ -255,4 +256,26 @@ textarea {
   .login-wrapper .box {
     width: 90%;
   }
+}
+
+#loginForm1 {
+	margin-bottom: 0;
+}
+
+#feedback {
+	padding: 8px 13px 8px 13px;
+}
+
+.feedbackPanel {
+	margin: 0;
+}
+
+.feedbackPanel li {
+	list-style-type: none;
+}
+
+.feedbackPanel span {
+	width: 100%;
+	margin: 0;
+	padding: 0;
 }

@@ -20,23 +20,23 @@ public interface RequestDao {
 
 	List<RequestEntity> getAllByEngineer(UserEntity engineerEntity);
 
-	List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status);
+	List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status, int from);
 
 	List<RequestEntity> getAllByStatus(String status, int from);
 
-	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status);
+	List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status, int from);
 	
 	List<Integer> getTopThree();
 	
 	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status, int from);
 
-	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status);
+	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from);
 
-	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status);
+	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, int from);
 
-	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user);
+	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user, int from);
 
-	List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned);
+	List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned, int from);
 	
 	List<RequestEntity> getAllOverDoRequest(Date startDate, Date endDate);
 	
@@ -45,5 +45,18 @@ public interface RequestDao {
 	Long getAllByAdminAndNotStatusCount(UserEntity user, String status);
 	
 	Long getAllCount();
+	
+	Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status);
+	
+	Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status);
+
+	Long getAllByEngineerAndNotStatusCount(UserEntity engineerEntity,
+			String status);
+
+	Long getAllByEngineerAndStatusCount(UserEntity engineerEntity, String status);
+
+	Long getAllByStatusOrAssignetToUserCount(String status, UserEntity user);
+
+	Long getDirectorHistoryCount(UserEntity director, String solved, String assigned);
 	
 }

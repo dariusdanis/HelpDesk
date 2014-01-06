@@ -250,28 +250,41 @@ public class HomePage extends BasePage {
 			}
 		case "CLIEN":
 			if (equalsFOCurrent()) {
+				totalRequest = requestService.getAllByBelongsTosAndNotStatuCount(getLoggedUser(), 
+						Constants.Status.SOLVED.toString());
 				return requestService.getAllByBelongsTosAndNotStatu(getLoggedUser(), 
-						Constants.Status.SOLVED.toString());
+						Constants.Status.SOLVED.toString(), from);
 			} else {
-				return requestService.getAllByBelongsToAndStatus(getLoggedUser(),
+				totalRequest = requestService.getAllByBelongsToAndStatusCount(getLoggedUser(),
 						Constants.Status.SOLVED.toString());
+				return requestService.getAllByBelongsToAndStatus(getLoggedUser(),
+						Constants.Status.SOLVED.toString(), from);
 			}
 		case "ENGIN":
 			if (equalsFOCurrent()) {
+				totalRequest = requestService.getAllByEngineerAndStatusCount(getLoggedUser(), 
+						Constants.Status.ASSIGNED.toString());
 				return requestService.getAllByEngineerAndStatus(getLoggedUser(), 
-						Constants.Status.ASSIGNED.toString());
+						Constants.Status.ASSIGNED.toString(), from);
 			} else {
-				return requestService.getAllByEngineerAndNotStatus(getLoggedUser(), 
+				totalRequest = requestService.getAllByEngineerAndNotStatusCount(getLoggedUser(), 
 						Constants.Status.ASSIGNED.toString());
+				return requestService.getAllByEngineerAndNotStatus(getLoggedUser(), 
+						Constants.Status.ASSIGNED.toString(), from);
 			}
 		case "DIREC":
 			if (equalsFOCurrent()) {
-				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),
+				totalRequest = requestService.getAllByStatusOrAssignetToUserCount(Constants.Status.NOT_ASSIGNED.toString(),
 						getLoggedUser());
+				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),
+						getLoggedUser(), from);
 			} else if (equalsFOHistory()) {
-				return requestService.getDirectorHistory(getLoggedUser(), Constants.Status.SOLVED.toString(),
+				totalRequest = requestService.getDirectorHistoryCount(getLoggedUser(), Constants.Status.SOLVED.toString(),
 						Constants.Status.ASSIGNED.toString());
+				return requestService.getDirectorHistory(getLoggedUser(), Constants.Status.SOLVED.toString(),
+						Constants.Status.ASSIGNED.toString(), from);
 			} else {
+				totalRequest = requestService.getAllCount();
 				return requestService.getAll(from);
 			}
 		}

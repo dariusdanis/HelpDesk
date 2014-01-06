@@ -53,8 +53,8 @@ public class RequestService {
 
 	@Transactional
 	public List<RequestEntity> getAllByEngineerAndStatus(
-			UserEntity engineerEntity, String status) {
-		return requsetDao.getAllByEngineerAndStatus(engineerEntity, status);
+			UserEntity engineerEntity, String status, int from) {
+		return requsetDao.getAllByEngineerAndStatus(engineerEntity, status, from);
 	}
 
 	@Transactional
@@ -63,8 +63,8 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status) {
-		return requsetDao.getAllByEngineerAndNotStatus(engineerEntity, status);
+	public List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status, int from) {
+		return requsetDao.getAllByEngineerAndNotStatus(engineerEntity, status, from);
 	}
 	
 	@Transactional
@@ -78,24 +78,23 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status) {
-		return requsetDao.getAllByBelongsTosAndNotStatu(belongsTo, status);
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from) {
+		return requsetDao.getAllByBelongsTosAndNotStatu(belongsTo, status, from);
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status) {
-		return requsetDao.getAllByBelongsToAndStatus(belongsTo, status);
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, int from) {
+		return requsetDao.getAllByBelongsToAndStatus(belongsTo, status, from);
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user) {
-		return requsetDao.getAllByStatusOrAssignetToUser(status, user);
+	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user, int from) {
+		return requsetDao.getAllByStatusOrAssignetToUser(status, user, from);
 	}
 
 	@Transactional
-	public List<RequestEntity> getDirectorHistory(UserEntity director,
-			String solved, String assigned) {
-		return requsetDao.getDirectorHistory(director, solved, assigned);
+	public List<RequestEntity> getDirectorHistory(UserEntity director, String solved, String assigned, int from) {
+		return requsetDao.getDirectorHistory(director, solved, assigned, from);
 	}
 	
 	@Transactional
@@ -149,4 +148,33 @@ public class RequestService {
 	public Long getAllCount() {
 		return requsetDao.getAllCount();
 	}
+	
+	@Transactional
+	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status) {
+		return requsetDao.getAllByBelongsTosAndNotStatuCount(belongsTo, status);
+	}
+	
+	@Transactional
+	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status) {
+		return requsetDao.getAllByBelongsToAndStatusCount(belongsTo, status);
+	}
+	
+	@Transactional
+	public Long getAllByEngineerAndStatusCount(UserEntity engineerEntity, String status) {
+		return requsetDao.getAllByEngineerAndStatusCount(engineerEntity, status);
+	}
+	
+	@Transactional
+	public Long getAllByEngineerAndNotStatusCount(UserEntity engineerEntity, String status) {
+		return requsetDao.getAllByEngineerAndNotStatusCount(engineerEntity, status);
+	}
+
+	public Long getAllByStatusOrAssignetToUserCount(String status, UserEntity user) {
+		return requsetDao.getAllByStatusOrAssignetToUserCount(status, user);
+	}
+
+	public Long getDirectorHistoryCount(UserEntity director, String solved, String assigned) {
+		return requsetDao.getDirectorHistoryCount(director, solved, assigned);
+	}
+	
 }

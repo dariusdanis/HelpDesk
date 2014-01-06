@@ -31,6 +31,17 @@ public class CompanyFacilityEntity {
     public CompanyFacilityEntity() {
 	}
 
+	public CompanyFacilityEntity(CompanyEntity companyEntity,
+			FacilityEntity facilityEntity, Date expiryDate) {
+		super();
+		this.companyEntity = companyEntity;
+		this.facilityEntity = facilityEntity;
+		this.expiryDate = expiryDate;
+	}
+
+
+
+
 	public int getId() {
 		return id;
 	}

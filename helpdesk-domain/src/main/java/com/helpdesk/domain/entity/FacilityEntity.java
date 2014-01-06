@@ -29,6 +29,10 @@ public class FacilityEntity {
 	public FacilityEntity(String name) {
 		this.name = name;
 	}
+	
+	public FacilityEntity(int id) {
+		this.id = id;
+	}
 
 	public int getId() {
 		return id;

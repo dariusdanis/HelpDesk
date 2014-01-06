@@ -23,5 +23,10 @@ public class CompanyDaoJpa implements CompanyDao {
 				CompanyEntity.class);
 		return query.getResultList();
 	}
+	
+	@Override
+	public CompanyEntity merge(CompanyEntity companyEntity) {
+		return em.merge(companyEntity);
+	}
 
 }

@@ -60,7 +60,7 @@ public class SingInPage extends WebPage {
                          setResponsePage(HomePage.class);
                  }        
              }
-             info("Try again");
+             info("Bad e-mail address and password combination!");
              target.add(feedbackPanel);
              target.appendJavaScript("showErrors();");
             }

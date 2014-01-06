@@ -17,7 +17,7 @@
         <div class="span4 box">
             <div class="content-wrap">
                 <h6>Log in</h6>
-                <div wicket:id="feedback" class="alert alert-info" id="feedback" ></div>
+                <div wicket:id="feedback" class="alert alert-info" id="feedback"></div>
                 <form wicket:id="loginForm">
 	                <input wicket:id="emailTF" class="span12" type="text" placeholder="E-mail address">
 	                <input wicket:id="passwordTF" class="span12" type="password" placeholder="Your password">
@@ -28,11 +28,8 @@
     </div>
 
     <script type="text/javascript">
-        $("#feedback").hide();
-        
         function showErrors() {
-            $("#feedback").hide();
-            $("#feedback").show('slow');
+            $("#feedback").slideDown('slow');
         }
     </script>
 

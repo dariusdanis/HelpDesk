@@ -95,6 +95,7 @@ public class AddRequestPage extends BasePage {
 					requestEntity = requestService.merge(requestEntity);
 					notificationService.merge(requestEntity, userService.findAllByRole("ADMIN"), Constants.NEW_REQUEST);
 					sendToRole(Constants.Roles.ADMIN.toString());
+					getSession().info("Request successfully added!");
 					setResponsePage(HomePage.class);
 				}
 			}

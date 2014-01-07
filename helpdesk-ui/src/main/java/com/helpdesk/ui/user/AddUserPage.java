@@ -74,6 +74,7 @@ public class AddUserPage extends BasePage {
 				if (validationError != null) {
 					appendJavaScript(target, validationError.get(0), validationError.get(1));
 				} else {
+					userEntity.setActive(true);
 					userService.merge(userEntity);
 					setResponsePage(HomePage.class);
 				}

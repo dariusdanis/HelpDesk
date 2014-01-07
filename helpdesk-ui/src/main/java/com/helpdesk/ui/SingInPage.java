@@ -54,6 +54,7 @@ public class SingInPage extends WebPage {
 
             @Override
             public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+<<<<<<< HEAD
                 if (email == null) {
                     info("E-mail is missing");
                     target.add(feedbackPanel);
@@ -71,6 +72,25 @@ public class SingInPage extends WebPage {
                     target.add(feedbackPanel);
                     target.appendJavaScript("showErrors();");
                 }
+=======
+            	if (email == null) {
+					info("E-mail is missing");
+					target.add(feedbackPanel);
+					target.appendJavaScript("showErrors();");
+				} else if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
+					if (((HelpDeskSession) getSession()).signIn(email, password)) {
+						setResponsePage(HomePage.class);
+					} else {
+						info("Bad e-mail address and password combination!");
+						target.add(feedbackPanel);
+						target.appendJavaScript("showErrors();");
+					}     
+				} else {
+					info("Bad e-mail address and password combination!");
+					target.add(feedbackPanel);
+					target.appendJavaScript("showErrors();");
+				}
+>>>>>>> 4d15189779f5630cb004a4670c280ea12588d540
             }
         };
     }

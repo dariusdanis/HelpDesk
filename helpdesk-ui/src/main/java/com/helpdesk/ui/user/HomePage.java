@@ -1,6 +1,7 @@
 package com.helpdesk.ui.user;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -67,6 +68,8 @@ public class HomePage extends BasePage {
 		pageConteiner.add(initPreviousButton("previous", requsetConteiner, pageConteiner, listView));
 		add(requsetConteiner);
 		add(pageConteiner);
+		addInfoMessage();
+		updateMainStats();
 	}
 
 	private Component initNextButton(String wicketId,
@@ -366,4 +369,31 @@ public class HomePage extends BasePage {
 		return getHDSession().getHomePageStatus().equals(Constants.FOHistory());
 	}
 	
+	public void addInfoMessage() {
+        Label infoMessage;
+        if (!getSession().getFeedbackMessages().isEmpty()) {
+            infoMessage = new Label("infoMessage", getSession()
+                    .getFeedbackMessages().iterator().next().getMessage()
+                    .toString());
+            getSession().getFeedbackMessages().clear();
+        } else {
+            infoMessage = new Label("infoMessage", "");
+            infoMessage.setVisible(false);
+        }
+        add(infoMessage);
+    }
+    
+    public void updateMainStats() {
+		Long countS = requestService.getTodaySolvedCount(BasePage.getSysteDate());
+		Label solvedRequests = new Label("solvedRequests", String.valueOf(countS));
+		add(solvedRequests);
+		   
+		Long countR = requestService.getTodayNewReq(BasePage.getSysteDate());
+		Label newRequests = new Label("newRequests", String.valueOf(countR));
+		add(newRequests);
+		    
+		Long countI = requestService.getTodayNewInfoReq(BasePage.getSysteDate());
+		Label newInfoRequests = new Label("newInfoRequests", String.valueOf(countI));
+		add(newInfoRequests);
+    }
 }

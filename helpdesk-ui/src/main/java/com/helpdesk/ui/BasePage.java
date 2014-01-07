@@ -92,7 +92,6 @@ public class BasePage extends WebPage {
 		menuItems.add(initReportsLink(menuItems.newChildId(), "View Reports"));
 		menuItems.add(initImportDataLink(menuItems.newChildId(), "Import Data"));
 		add(initNotificationCounter("notificationCounter"));
-		add(initRemoveNotifications("removeNotifications"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
 		add(initLogOffLink("logOff"));
@@ -234,22 +233,6 @@ public class BasePage extends WebPage {
 
 	private Label initNotificationCounter(String wicketId) {
 		return new Label(wicketId, notificationService.getCount(getLoggedUser()));
-	}
-	
-	private AjaxLink<Object> initRemoveNotifications(String wicketId) {
-		AjaxLink<Object> link = new AjaxLink<Object>(wicketId) {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick(AjaxRequestTarget target) {
-				notificationService.removeAll(getLoggedUser());
-				
-				
-			}
-			
-		};
-		
-		return link;
 	}
 
 	private AjaxLink<Object> initNotificationsLink(String wicketId, final RepeatingView notificationItems, 

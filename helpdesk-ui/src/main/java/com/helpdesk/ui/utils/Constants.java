@@ -24,6 +24,9 @@ public class Constants {
 	public static List<String> ACTIONS_ENG = Arrays.asList(new String[] {"Back To Administration!", "Solved!", "Woun't Solve!"});
 	public static List<String> ACTIONS_ADM = Arrays.asList(new String[] {"Solved!", "Woun't Solve!"});
 	
+	public static final String MUST_MATCH = "Passwords must match!";
+	public static final String NOT_EMPTY = "You cannot leave this empty!";
+	
 	public static final int MIN_LENGTH = 1;
 	public static final int MAX_LENGTH = 40;
 	public static final int MAX_LENGTH_TAREA = 9000;

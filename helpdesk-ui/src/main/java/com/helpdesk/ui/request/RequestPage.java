@@ -1,7 +1,6 @@
 package com.helpdesk.ui.request;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -177,7 +176,7 @@ public class RequestPage extends BasePage {
 										Integer.parseInt(timeSpend)));
 							}
 							requestEntity.setStatus(Constants.Status.SOLVED.toString());
-							requestEntity.setSolveDate(new Date());
+							requestEntity.setSolveDate(BasePage.getSysteDate());
 							notificationHandler(requestService.merge(requestEntity), 
 									Constants.REQUEST_SOLVE);
 							setResponsePage(HomePage.class);

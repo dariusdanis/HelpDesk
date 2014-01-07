@@ -127,10 +127,11 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from) {
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from, String status2) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status != :status", RequestEntity.class);
+				" r.requestBelongsTo.id = :id AND r.status != :status AND r.status != :status2", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
 		query.setMaxResults(MAX_REZULT);
 		query.setFirstResult(from);
@@ -138,10 +139,11 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, int from) {
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, String status2, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status = :status", RequestEntity.class);
+				" r.requestBelongsTo.id = :id AND (r.status = :status OR r.status = :status2)", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
 		query.setMaxResults(MAX_REZULT);
 		query.setFirstResult(from);
@@ -209,19 +211,21 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status) {
+	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status, String status2) {
 		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status != :status", Long.class);
+				" r.requestBelongsTo.id = :id AND r.status != :status AND r.status != :status2", Long.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
 		return query.getSingleResult();
 	}
 
 	@Override
-	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status) {
+	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status, String status2) {
 		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status = :status", Long.class);
+				" r.requestBelongsTo.id = :id AND (r.status = :status OR r.status = :status2)", Long.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
 		return query.getSingleResult();
 	}

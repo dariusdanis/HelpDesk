@@ -30,9 +30,9 @@ public interface RequestDao {
 	
 	List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status, int from);
 
-	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from);
+	List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from, String status2);
 
-	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, int from);
+	List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, String status2, int from);
 
 	List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user, int from);
 
@@ -46,9 +46,9 @@ public interface RequestDao {
 	
 	Long getAllCount();
 	
-	Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status);
+	Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status, String status2);
 	
-	Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status);
+	Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status, String status2);
 
 	Long getAllByEngineerAndNotStatusCount(UserEntity engineerEntity,
 			String status);

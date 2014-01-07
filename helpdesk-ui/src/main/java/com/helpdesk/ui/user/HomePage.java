@@ -3,8 +3,6 @@ package com.helpdesk.ui.user;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.Attribute;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -320,14 +318,14 @@ public class HomePage extends BasePage {
 		case "CLIEN":
 			if (equalsFOCurrent()) {
 				totalRequest = requestService.getAllByBelongsTosAndNotStatuCount(getLoggedUser(), 
-						Constants.Status.SOLVED.toString());
+						Constants.Status.SOLVED.toString(), Constants.Status.WONT_SOLVE.toString());
 				return requestService.getAllByBelongsTosAndNotStatu(getLoggedUser(), 
-						Constants.Status.SOLVED.toString(), from);
+						Constants.Status.SOLVED.toString(), Constants.Status.WONT_SOLVE.toString(), from);
 			} else {
 				totalRequest = requestService.getAllByBelongsToAndStatusCount(getLoggedUser(),
-						Constants.Status.SOLVED.toString());
+						Constants.Status.SOLVED.toString(), Constants.Status.WONT_SOLVE.toString());
 				return requestService.getAllByBelongsToAndStatus(getLoggedUser(),
-						Constants.Status.SOLVED.toString(), from);
+						Constants.Status.SOLVED.toString(), Constants.Status.WONT_SOLVE.toString(), from);
 			}
 		case "ENGIN":
 			if (equalsFOCurrent()) {
@@ -342,9 +340,7 @@ public class HomePage extends BasePage {
 						Constants.Status.ASSIGNED.toString(), from);
 			}
 		case "DIREC":
-			System.out.println(filterOption);
 			if (equalsFOCurrent()) {
-				System.out.println(filterOption);
 				totalRequest = requestService.getAllByStatusOrAssignetToUserCount(Constants.Status.NOT_ASSIGNED.toString(),
 						getLoggedUser());
 				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),

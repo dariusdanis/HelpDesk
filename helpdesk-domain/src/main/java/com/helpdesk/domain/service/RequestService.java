@@ -78,13 +78,13 @@ public class RequestService {
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from) {
-		return requsetDao.getAllByBelongsTosAndNotStatu(belongsTo, status, from);
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, String status2, int from) {
+		return requsetDao.getAllByBelongsTosAndNotStatu(belongsTo, status, from, status2);
 	}
 
 	@Transactional
-	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, int from) {
-		return requsetDao.getAllByBelongsToAndStatus(belongsTo, status, from);
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, String status2, int from) {
+		return requsetDao.getAllByBelongsToAndStatus(belongsTo, status, status2, from);
 	}
 
 	@Transactional
@@ -102,7 +102,6 @@ public class RequestService {
 		ArrayList<List<Object>> entities = new ArrayList<List<Object>>();
 		List<RequestEntity> allEntities = requsetDao.getAllOverDoRequest(startDate, endDate);
 		Calendar cal = Calendar.getInstance();
-		System.out.println(allEntities.size());
 		for (RequestEntity entity : allEntities) {
 			Date solveDate = entity.getSolveDate() == null ? new Date() : entity.getSolveDate();
 			cal.setTime(solveDate);
@@ -150,13 +149,13 @@ public class RequestService {
 	}
 	
 	@Transactional
-	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status) {
-		return requsetDao.getAllByBelongsTosAndNotStatuCount(belongsTo, status);
+	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status, String status2) {
+		return requsetDao.getAllByBelongsTosAndNotStatuCount(belongsTo, status, status2);
 	}
 	
 	@Transactional
-	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status) {
-		return requsetDao.getAllByBelongsToAndStatusCount(belongsTo, status);
+	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status, String status2) {
+		return requsetDao.getAllByBelongsToAndStatusCount(belongsTo, status, status2);
 	}
 	
 	@Transactional

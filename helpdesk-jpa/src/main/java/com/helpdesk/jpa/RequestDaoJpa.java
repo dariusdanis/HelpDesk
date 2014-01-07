@@ -19,7 +19,7 @@ import com.helpdesk.domain.entity.UserEntity;
 @Repository
 public class RequestDaoJpa implements RequestDao {
 
-	private final static int MAX_REZULT = 2;
+	private final static int MAX_REZULT = 10;
 	
 	@PersistenceContext
 	private EntityManager em;

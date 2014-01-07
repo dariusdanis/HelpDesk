@@ -81,6 +81,34 @@ public class RequestEntity {
     public RequestEntity() {
 	}
     
+	public RequestEntity(String status, String requestText,
+			String requestSolution, Date requestDate, String summary,
+			TypeEntity typeEntity, UserEntity creatorEntity,
+			UserEntity engineerEntity, UserEntity administratorEntity,
+			List<NotificationEntity> notificationEntities,
+			FacilityEntity facilityEntity, Date solveDate, String whatWasDone,
+			String receiptMethod, String timeSpend, Integer parentRequsetId) {
+		this.status = status;
+		this.requestText = requestText;
+		this.requestSolution = requestSolution;
+		this.requestDate = requestDate;
+		this.summary = summary;
+		this.typeEntity = typeEntity;
+		this.creatorEntity = creatorEntity;
+		this.engineerEntity = engineerEntity;
+		this.administratorEntity = administratorEntity;
+		this.notificationEntities = notificationEntities;
+		this.facilityEntity = facilityEntity;
+		this.solveDate = solveDate;
+		this.whatWasDone = whatWasDone;
+		this.receiptMethod = receiptMethod;
+		this.timeSpend = timeSpend;
+		this.parentRequsetId = parentRequsetId;
+		this.requestBelongsTo = creatorEntity;
+	}
+
+
+
 	public int getId() {
 		return id;
 	}

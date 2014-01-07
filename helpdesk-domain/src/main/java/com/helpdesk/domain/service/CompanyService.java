@@ -20,4 +20,9 @@ public class CompanyService {
 		return companyDao.getAll();
 	}
 	
+	@Transactional
+	public CompanyEntity merge(CompanyEntity companyEntity) {
+		return companyDao.merge(companyEntity);
+	}
+	
 }

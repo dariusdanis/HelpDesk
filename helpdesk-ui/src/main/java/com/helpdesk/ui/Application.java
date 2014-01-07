@@ -14,6 +14,7 @@ import com.helpdesk.ui.statistic.StatisticsPage;
 import com.helpdesk.ui.user.AddUserPage;
 import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.user.ImportDataPage;
 import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.HelpDeskSession;
 
@@ -39,6 +40,7 @@ public class Application extends AuthenticatedWebApplication {
 		mountPage("user/alluser", AllUserPage.class);
 		mountPage("reports", ReportsPage.class);
 		mountPage("statistics", StatisticsPage.class);
+		mountPage("import", ImportDataPage.class);
 	}
 
 	@Override

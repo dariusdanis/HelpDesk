@@ -41,6 +41,11 @@ public class UserService {
 	public List<UserEntity> findAll() {
 		return userDao.findAll();
 	}
+	
+	@Transactional
+	public UserEntity findByCompanyFK(int companyFK) {
+		return userDao.findByCompanyId(companyFK);
+	}
 
 	public UserEntity findById(int id) {
 		return userDao.findById(id);

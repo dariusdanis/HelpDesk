@@ -34,7 +34,6 @@ public class SingInPage extends WebPage {
 		loginForm.add(initLoginButton("signInButton", feedbackPanel));
 		add(loginForm);
 		add(feedbackPanel);
-		
 	}
 	
 	private TextField<String> initEmailTextField(String wicketId) {

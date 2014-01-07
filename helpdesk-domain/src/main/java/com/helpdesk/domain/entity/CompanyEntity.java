@@ -29,6 +29,12 @@ public class CompanyEntity {
 		this.id = id;
 	}
 	
+	public CompanyEntity(String comapanyName, String companyAddress) {
+		super();
+		this.comapanyName = comapanyName;
+		this.companyAddress = companyAddress;
+	}
+
 	public int getId() {
 		return id;
 	}

@@ -7,5 +7,6 @@ import com.helpdesk.domain.entity.CompanyEntity;
 public interface CompanyDao {
 
 	List<CompanyEntity> getAll();
+	CompanyEntity merge (CompanyEntity companyEntity);
 
 }

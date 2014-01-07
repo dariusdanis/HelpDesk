@@ -49,33 +49,31 @@ public class SingInPage extends WebPage {
 	}
 	
 	private AjaxButton initLoginButton(String wicketId, final FeedbackPanel feedbackPanel) {
-		return new AjaxButton(wicketId) {
+        return new AjaxButton(wicketId) {
             private static final long serialVersionUID = 1L;
-            
+
             @Override
             public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-            	System.out.println('w');
-            	
-            	if (email == null) {
-					info("E-mail is missing");
-					target.add(feedbackPanel);
-					target.appendJavaScript("showErrors();");
-				} else if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
-					if (((HelpDeskSession) getSession()).signIn(email, password)) {
-						setResponsePage(HomePage.class);
-					} else {
-						info("Bad e-mail address and password combination!");
-						target.add(feedbackPanel);
-						target.appendJavaScript("showErrors();");
-					}     
-				} else {
-					info("Bad e-mail address and password combination!");
-					target.add(feedbackPanel);
-					target.appendJavaScript("showErrors();");
-				}
+                if (email == null) {
+                    info("E-mail is missing");
+                    target.add(feedbackPanel);
+                    target.appendJavaScript("showErrors();");
+                } else if(email.matches(EmailAddressValidator.getInstance().getPattern().toString())) {
+                    if (((HelpDeskSession) getSession()).signIn(email, password)) {
+                        setResponsePage(HomePage.class);
+                    } else {
+                        info("Bad e-mail address and password combination!");
+                        target.add(feedbackPanel);
+                        target.appendJavaScript("showErrors();");
+                    }
+                } else {
+                    info("Bad e-mail address and password combination!");
+                    target.add(feedbackPanel);
+                    target.appendJavaScript("showErrors();");
+                }
             }
         };
-	}
+    }
 	
 }
 

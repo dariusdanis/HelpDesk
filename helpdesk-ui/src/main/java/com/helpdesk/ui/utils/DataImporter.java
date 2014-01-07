@@ -312,9 +312,12 @@ public class DataImporter {
 			if (status.equals("N")) {
 				status = "NOT_ASSIGNED";
 			}
+			
 
-			UserEntity creator = new UserEntity();
-			creator.setId(companyHashmap.get(FKClient));
+			Integer companyFK = companyHashmap.get(FKClient);
+			UserEntity creator = userService.findByCompanyFK(companyFK);
+			
+			
 			
 			FacilityEntity facilityEntity = new FacilityEntity();
 			facilityEntity.setId((facilityHashmap.get(FKFacility)));

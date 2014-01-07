@@ -55,5 +55,13 @@ public class UserDaoJpa implements UserDao {
 		return em.find(UserEntity.class, id);
 	}
 	
+	@Override
+	public UserEntity findByCompanyId(int companyFK) {
+		TypedQuery<UserEntity> query = em.createQuery(
+				"SELECT u FROM UserEntity u WHERE u.companyEntity.id = :companyFK order by active desc", UserEntity.class);
+	    query.setParameter("companyFK", companyFK);
+		return query.getResultList().get(0);
+	}
+	
 	
 }

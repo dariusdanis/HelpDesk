@@ -11,5 +11,6 @@ public interface UserDao {
 	List<UserEntity> findAllByRole(String role);
 	List<UserEntity> findAll();
 	UserEntity findById(int id);
+	UserEntity findByCompanyId(int companyFK);
 	
 }

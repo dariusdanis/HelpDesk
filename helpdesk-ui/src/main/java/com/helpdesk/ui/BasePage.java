@@ -36,6 +36,7 @@ import com.helpdesk.ui.statistic.StatisticsPage;
 import com.helpdesk.ui.user.AddUserPage;
 import com.helpdesk.ui.user.AllUserPage;
 import com.helpdesk.ui.user.HomePage;
+import com.helpdesk.ui.user.ImportDataPage;
 import com.helpdesk.ui.user.ProfilePage;
 import com.helpdesk.ui.utils.Constants;
 import com.helpdesk.ui.utils.HelpDeskSession;
@@ -80,6 +81,7 @@ public class BasePage extends WebPage {
 		menuItems.add(initPageStatisticsLink(menuItems.newChildId(), "Page Statistics"));
 		menuItems.add(initRequestLinkLink(menuItems.newChildId(), "Create Request"));
 		menuItems.add(initReportsLink(menuItems.newChildId(), "View Reports"));
+		menuItems.add(initImportDataLink(menuItems.newChildId(), "Import Data"));
 		add(initNotificationCounter("notificationCounter"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
@@ -96,6 +98,21 @@ public class BasePage extends WebPage {
 			@Override
 			public void onClick() {
 				setResponsePage(ReportsPage.class);
+			}
+		};
+		
+		link.add(new Label("menuLabel", label));
+		link.setVisible(director());
+		return link;
+	}
+	
+	private Link<Object> initImportDataLink(String wicketId, String label) {
+		Link<Object> link = new Link<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick() {
+				setResponsePage(ImportDataPage.class);
 			}
 		};
 		

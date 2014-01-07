@@ -88,7 +88,6 @@ public class RequestEntity {
 			List<NotificationEntity> notificationEntities,
 			FacilityEntity facilityEntity, Date solveDate, String whatWasDone,
 			String receiptMethod, String timeSpend, Integer parentRequsetId) {
-		super();
 		this.status = status;
 		this.requestText = requestText;
 		this.requestSolution = requestSolution;
@@ -105,6 +104,7 @@ public class RequestEntity {
 		this.receiptMethod = receiptMethod;
 		this.timeSpend = timeSpend;
 		this.parentRequsetId = parentRequsetId;
+		this.requestBelongsTo = creatorEntity;
 	}
 
 

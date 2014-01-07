@@ -33,10 +33,13 @@ public class FacilityEntity {
 	
 	public FacilityEntity() {}
 	
-	public FacilityEntity(String name) {
+	public FacilityEntity(String name, String lhInc, String lhReq) {
+		super();
 		this.name = name;
+		this.lhInc= lhInc;
+		this.lhReq = lhReq;
 	}
-	
+
 	public FacilityEntity(int id) {
 		this.id = id;
 	}

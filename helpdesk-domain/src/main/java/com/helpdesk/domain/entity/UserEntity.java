@@ -51,7 +51,7 @@ public class UserEntity {
 	
 	public UserEntity(String name, String surname, String email,
 			String phone, String password, CompanyEntity companyEntity,
-			RoleEntity roleEntity) {
+			RoleEntity roleEntity, boolean active) {
 		this.name = name;
 		this.surname = surname;
 		this.email = email;
@@ -59,6 +59,7 @@ public class UserEntity {
 		this.password = password;
 		this.companyEntity = companyEntity;
 		this.roleEntity = roleEntity;
+		this.active = active;
 	}
 
 

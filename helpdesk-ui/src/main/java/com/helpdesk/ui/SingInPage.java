@@ -55,8 +55,6 @@ public class SingInPage extends WebPage {
             
             @Override
             public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-            	System.out.println('w');
-            	
             	if (email == null) {
 					info("E-mail is missing");
 					target.add(feedbackPanel);

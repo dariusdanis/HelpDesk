@@ -100,13 +100,24 @@ public class RequestPage extends BasePage {
 
 	private WebMarkupContainer initSubbmitConteiner(String wicketId) {
 		WebMarkupContainer subbmitConteiner = new WebMarkupContainer(wicketId);
-		subbmitConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
-				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) && 
-				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		boolean visible = false;
+		if ((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())) {
+			if (!requestEntity.getStatus().equals(Constants.Status.SOLVED.toString()) &&
+					!requestEntity.getStatus().equals(Constants.Status.WONT_SOLVE.toString())) {
+				visible = true;
+			}
+		}
+		
+		subbmitConteiner.setVisible(visible);
 		return subbmitConteiner;
 	}
 
 	private TextArea<String> initAnswerTextArea(String wicketId, String expression) {
+		if (client() && (requestEntity.getStatus().equals(Constants.Status.ASSIGNED.toString()) || 
+				requestEntity.getStatus().equals(Constants.Status.NOT_ASSIGNED.toString()))) {
+			requestEntity.setRequestSolution("");
+		}
 		TextArea<String> textAria = new TextArea<String>(wicketId,
 	               new PropertyModel<String>(this, expression));
 		textAria.setOutputMarkupId(true);
@@ -118,9 +129,15 @@ public class RequestPage extends BasePage {
 				new PropertyModel<String>(this, expression));
 		WebMarkupContainer timeConteiner = new WebMarkupContainer("timeConteiner");
 		timeConteiner.add(textField);
-		timeConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
-				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())&& 
-				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		boolean visible = false;
+		if ((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())) {
+			if (!requestEntity.getStatus().equals(Constants.Status.SOLVED.toString()) &&
+					!requestEntity.getStatus().equals(Constants.Status.WONT_SOLVE.toString())) {
+				visible = true;
+			}
+		}
+		timeConteiner.setVisible(visible);
 		return timeConteiner;
 	}
 
@@ -137,9 +154,15 @@ public class RequestPage extends BasePage {
 			}
 		};
 		actionConteiner.add(action);
-		actionConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
-				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())&& 
-				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		boolean visible = false;
+		if ((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())) {
+			if (!requestEntity.getStatus().equals(Constants.Status.SOLVED.toString()) &&
+					!requestEntity.getStatus().equals(Constants.Status.WONT_SOLVE.toString())) {
+				visible = true;
+			}
+		}
+		actionConteiner.setVisible(visible);
 		return actionConteiner;
 	}
 
@@ -159,13 +182,14 @@ public class RequestPage extends BasePage {
 					} else {
 						switch (action) {
 						case "Back To Administration!":
-							requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
+							requestEntity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
 							requestEntity.setEngineerEntity(null);
 							requestService.merge(requestEntity);
 							notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getAdministratorEntity()}),
 									Constants.BACK_TO_ADMIN);
 							sendToUser(requestEntity.getAdministratorEntity(),
 									Constants.BACK_TO_ADMIN);
+							getSession().info("Request successfully returned!");
 							setResponsePage(HomePage.class);
 							break;
 						case "Solved!":
@@ -179,11 +203,13 @@ public class RequestPage extends BasePage {
 							requestEntity.setSolveDate(BasePage.getSysteDate());
 							notificationHandler(requestService.merge(requestEntity), 
 									Constants.REQUEST_SOLVE);
+							getSession().info("Request successfully solved!");
 							setResponsePage(HomePage.class);
 							break;
 						case "Woun't Solve!":
 							requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
 							notificationHandler(requestService.merge(requestEntity), Constants.WOUNT_SOLVE);
+							getSession().info("Request not solved");
 							setResponsePage(HomePage.class);
 							break;
 						}

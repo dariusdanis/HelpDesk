@@ -354,7 +354,7 @@ public class BasePage extends WebPage {
 		return null;
 	}
 	
-	private boolean checkLength (String data, int minLength, int maxLength) {
+	protected boolean checkLength (String data, int minLength, int maxLength) {
 		return data.length() < minLength || data.length() > maxLength;
 	}
 	
@@ -366,7 +366,7 @@ public class BasePage extends WebPage {
 		return ((HelpDeskSession) getSession()).isSignedIn();
 	}
 	
-	private String lengthMessage(int minLength, int maxLength) {
+	protected String lengthMessage(int minLength, int maxLength) {
 		return "DOTO LATER: minLength " + minLength + " maxLength " + maxLength;
 	}
 	

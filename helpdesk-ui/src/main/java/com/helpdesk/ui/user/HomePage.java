@@ -3,8 +3,13 @@ package com.helpdesk.ui.user;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.management.Attribute;
+
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -60,9 +65,50 @@ public class HomePage extends BasePage {
 		pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 
 				pageConteiner, listView));
 		requsetConteiner.add(listView);
+		pageConteiner.add(initNextButton("next", requsetConteiner, pageConteiner, listView));
+		pageConteiner.add(initPreviousButton("previous", requsetConteiner, pageConteiner, listView));
 		add(requsetConteiner);
 		add(pageConteiner);
 	}
+
+	private Component initNextButton(String wicketId,
+			final WebMarkupContainer requsetConteiner,
+			final WebMarkupContainer pageConteiner, final ListView<RequestEntity> requestlistView) {
+		AjaxFallbackLink<Object> ajaxFallbackLink = new AjaxFallbackLink<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				int totalPages = totalRequest.intValue() / 10;
+				totalPages = (totalRequest.intValue() % 10) == 0 ? totalPages : ++totalPages;
+				if (++pageId != totalPages){
+					changePage(target, String.valueOf(pageId), requsetConteiner, requestlistView, pageConteiner);
+				}
+			}
+		};
+		
+		ajaxFallbackLink.setOutputMarkupId(true);
+		return ajaxFallbackLink;
+	}
+
+	private Component initPreviousButton(String wicketId,
+			final WebMarkupContainer requsetConteiner,
+			final WebMarkupContainer pageConteiner, final ListView<RequestEntity> requestlistView) {
+		AjaxFallbackLink<Object> ajaxFallbackLink = new AjaxFallbackLink<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				if ((pageId) != 0) {
+					changePage(target, String.valueOf(--pageId), requsetConteiner, requestlistView, pageConteiner);
+				}
+			}
+		};
+		
+		ajaxFallbackLink.setOutputMarkupId(true);
+		return ajaxFallbackLink;
+	}
+
 
 	private ListView<String> initPaging(String wicketId, Long totalRequest, 
 			final WebMarkupContainer requsetConteiner, final WebMarkupContainer pageConteiner,
@@ -76,6 +122,9 @@ public class HomePage extends BasePage {
 				AjaxLink<Object> ajaxLink = initLinkToPage("linkToPage", item.getModel().getObject(), 
 						requsetConteiner, requestlistView, pageConteiner);
 				ajaxLink.add(new Label("pageNumber", 1 + Integer.valueOf(item.getModel().getObject())));
+				if (Integer.valueOf(item.getModel().getObject()) == pageId) {
+					ajaxLink.add(new AttributeModifier("class", "active"));
+				}
 				item.add(ajaxLink);
 			}
 
@@ -97,11 +146,12 @@ public class HomePage extends BasePage {
 					requsetConteiner.removeAll();
 					requestlistView.removeAll();
 					ListView<RequestEntity> listView = initRequestTable("repeatingView", 
-							getRequestList((Integer.valueOf(page)) * 2));
+							getRequestList((Integer.valueOf(page)) * 10));
 					requsetConteiner.add(listView);
 					pageConteiner.removeAll();
-					pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 	
-							pageConteiner, listView));
+					pageConteiner.add(initNextButton("next", requsetConteiner, pageConteiner, listView));
+					pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, pageConteiner, listView));
+					pageConteiner.add(initPreviousButton("previous", requsetConteiner, pageConteiner, listView));
 					target.add(requsetConteiner);
 					target.add(pageConteiner);
 				}
@@ -109,14 +159,31 @@ public class HomePage extends BasePage {
 		};
 		return ajaxLink;
 	}
-
+	
+	private void changePage(AjaxRequestTarget target, String page, WebMarkupContainer requsetConteiner,
+			ListView<RequestEntity> requestlistView, WebMarkupContainer pageConteiner){
+		pageId = Integer.valueOf(page);
+		requsetConteiner.removeAll();
+		requestlistView.removeAll();
+		ListView<RequestEntity> listView = initRequestTable("repeatingView", 
+				getRequestList((Integer.valueOf(page)) * 10));
+		requsetConteiner.add(listView);
+		pageConteiner.removeAll();
+		pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 	
+				pageConteiner, listView));
+		pageConteiner.add(initNextButton("next", requsetConteiner, pageConteiner, listView));
+		pageConteiner.add(initPreviousButton("previous", requsetConteiner, pageConteiner, listView));
+		target.add(requsetConteiner);
+		target.add(pageConteiner);
+	}
+	
 	private List<String> initList(Long totalRequest) {
 		List<String> list = new ArrayList<String>();
 		int pageRadius = 3;
-		int perPage = 2;
+		int perPage = 10;
 		int currentPage = pageId + 1;
 		int totalPages = totalRequest.intValue() / perPage;
-		totalPages = (totalRequest.intValue() % 2) == 0 ? totalPages : ++totalPages;
+		totalPages = (totalRequest.intValue() % perPage) == 0 ? totalPages : ++totalPages;
 		
 		int rangeFrom;
 		int rangeTo;
@@ -211,22 +278,24 @@ public class HomePage extends BasePage {
 		return new ArrayList<String>();
 	}
 
-	private OnChangeAjaxBehavior initChangeBehaviour(final WebMarkupContainer container,
+	private OnChangeAjaxBehavior initChangeBehaviour(final WebMarkupContainer requsetConteiner,
 			final ListView<RequestEntity> listView, final WebMarkupContainer pageConteiner) {
 		return new OnChangeAjaxBehavior() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    protected void onUpdate(AjaxRequestTarget target) {
-				getHDSession().setHomePageStatus(filterOption);
+				getHDSession().setHomePageStatus(filterOption.toLowerCase());
 				listView.removeAll();
-				container.removeAll();
+				requsetConteiner.removeAll();
 				pageConteiner.removeAll();
 				ListView<RequestEntity> requestlistView = initRequestTable("repeatingView", getRequestList(0));
-				pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, container, 
+				pageConteiner.add(initPaging("repeatingViewPaging", totalRequest, requsetConteiner, 
 						pageConteiner, requestlistView));
-				container.add(requestlistView);
-				target.add(container);
+				requsetConteiner.add(requestlistView);
+				pageConteiner.add(initNextButton("next", requsetConteiner, pageConteiner, listView));
+				pageConteiner.add(initPreviousButton("previous", requsetConteiner, pageConteiner, listView));
+				target.add(requsetConteiner);
 				target.add(pageConteiner);
 			}
 			
@@ -273,7 +342,9 @@ public class HomePage extends BasePage {
 						Constants.Status.ASSIGNED.toString(), from);
 			}
 		case "DIREC":
+			System.out.println(filterOption);
 			if (equalsFOCurrent()) {
+				System.out.println(filterOption);
 				totalRequest = requestService.getAllByStatusOrAssignetToUserCount(Constants.Status.NOT_ASSIGNED.toString(),
 						getLoggedUser());
 				return requestService.getAllByStatusOrAssignetToUser(Constants.Status.NOT_ASSIGNED.toString(),

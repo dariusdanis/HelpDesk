@@ -46,4 +46,13 @@ public class NotificationService {
 		notificationDao.remove(notificationEntity);
 	}
 	
+	@Transactional
+	public void removeAll(UserEntity userEntity){
+		List<NotificationEntity> notifications = notificationDao.getNotificationByUser(userEntity);
+		
+		for (NotificationEntity notificationEntity : notifications) {
+			notificationDao.remove(notificationEntity);
+		}
+	}
+	
 }

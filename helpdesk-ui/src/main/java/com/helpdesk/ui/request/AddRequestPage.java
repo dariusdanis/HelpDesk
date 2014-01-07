@@ -2,7 +2,6 @@ package com.helpdesk.ui.request;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -91,7 +90,7 @@ public class AddRequestPage extends BasePage {
 						requestEntity.setReceiptMethod(Constants.ReceiptMethod.SELF_SERVICE.toString());
 						requestEntity.setRequestBelongsTo(getLoggedUser());
 					}
-					requestEntity.setRequestDate(new Date());
+					requestEntity.setRequestDate(BasePage.getSysteDate());
 					requestEntity.setStatus(Constants.Status.NOT_ASSIGNED.toString());
 					requestEntity = requestService.merge(requestEntity);
 					notificationService.merge(requestEntity, userService.findAllByRole("ADMIN"), Constants.NEW_REQUEST);

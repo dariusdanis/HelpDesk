@@ -36,17 +36,17 @@
                         <th class="span1">
                             Id
                         </th>
-                        <th class="span2">
-                            Summary
-                        </th>
-                        <th class="span2">
-                            <span class="line"></span>Date
-                        </th>
                         <th class="span3">
+                            <span class="line"></span>Creation Date
+                        </th>
+                        <th class="span2">
                             <span class="line"></span>Type
                         </th>
                         <th class="span3">
                             <span class="line"></span>Assigned
+                        </th>
+                        <th class="span3">
+                            <span class="line"></span>Late by
                         </th>
                         <th class="span3">
                             <span class="line"></span>Request Status
@@ -57,11 +57,11 @@
                      <tbody>
                         <tr wicket:id="repeatingView">
 	                       <td><a href="#" wicket:id="linkToRequest"><label wicket:id="requestId"></label></a></td>
-	                       <td><label wicket:id="summary"></label></td>
 	                       <td><label wicket:id="date"></label></td>
 	                       <td><label wicket:id="type"></label></td>
 	                       <td><label wicket:id="assigned"></label></td>
-	                       <td><label wicket:id="status" class="label label-success"></label></td>
+	                       <td><label wicket:id="lateBy"></label></td>
+                    	   <td><label wicket:id="status" class="label label-success"></label></td>
                        </tr>
                    </tbody>
                </tbody>

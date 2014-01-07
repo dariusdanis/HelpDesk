@@ -2,22 +2,28 @@ package com.helpdesk.ui;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnLoadHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.RepeatingView;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.protocol.ws.api.IWebSocketConnection;
 import org.apache.wicket.protocol.ws.api.IWebSocketConnectionRegistry;
 import org.apache.wicket.protocol.ws.api.SimpleWebSocketConnectionRegistry;
@@ -54,6 +60,9 @@ public class BasePage extends WebPage {
 	@SpringBean
 	private UserService userService;
 	
+	private static Date SYSTEM_DATE;
+	private String systemDateStr;
+	
 	@Override
 	public void renderHead(IHeaderResponse response){
 		super.renderHead(response);	   
@@ -83,12 +92,45 @@ public class BasePage extends WebPage {
 		menuItems.add(initReportsLink(menuItems.newChildId(), "View Reports"));
 		menuItems.add(initImportDataLink(menuItems.newChildId(), "Import Data"));
 		add(initNotificationCounter("notificationCounter"));
+		add(initRemoveNotifications("removeNotifications"));
 		add(initNotificationsLink("notificationLink", notificationItems, notificationConteiner));
 		add(initHomeLink("home"));
 		add(initLogOffLink("logOff"));
+		add(initSystemDatePicker("systemDate", "systemDateStr"));
 		add(menuItems);
 		add(initWebSocket());
 		add(notificationConteiner);
+	}
+
+	private TextField<String> initSystemDatePicker(String wicketId, String expression) {
+		if (SYSTEM_DATE != null) {
+			systemDateStr = new SimpleDateFormat("MM-DD-yyyy").format(SYSTEM_DATE);
+		}
+		TextField<String> textField = new TextField<String>(wicketId,
+                new PropertyModel<String>(this, expression));
+		textField.add(initChangeBehaviour());
+		return textField;
+	}
+
+	private OnChangeAjaxBehavior initChangeBehaviour() {
+		return new OnChangeAjaxBehavior() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+		    protected void onUpdate(AjaxRequestTarget target) {
+				if (systemDateStr != null && systemDateStr.matches("\\d{2}/\\d{2}/\\d{4}")) {
+					try {
+						SYSTEM_DATE = new SimpleDateFormat("MM/dd/yyyy").parse(systemDateStr);
+					} catch (ParseException e) {
+						SYSTEM_DATE = null;
+						e.printStackTrace();
+					}
+				} else {
+					SYSTEM_DATE = null;
+				}
+			}
+			
+		};
 	}
 
 	private Link<Object> initReportsLink(String wicketId, String label) {
@@ -193,6 +235,22 @@ public class BasePage extends WebPage {
 	private Label initNotificationCounter(String wicketId) {
 		return new Label(wicketId, notificationService.getCount(getLoggedUser()));
 	}
+	
+	private AjaxLink<Object> initRemoveNotifications(String wicketId) {
+		AjaxLink<Object> link = new AjaxLink<Object>(wicketId) {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void onClick(AjaxRequestTarget target) {
+				notificationService.removeAll(getLoggedUser());
+				
+				
+			}
+			
+		};
+		
+		return link;
+	}
 
 	private AjaxLink<Object> initNotificationsLink(String wicketId, final RepeatingView notificationItems, 
 			final WebMarkupContainer notificationConteiner) {
@@ -220,9 +278,9 @@ public class BasePage extends WebPage {
 
 			@Override
 			public void onClick() {
+				notificationService.remove(notificationEntity);
 				setResponsePage(RequestPage.class, RequestPage.parametersWith(notificationEntity.
 						getRequestEntity().getId()));
-				notificationService.remove(notificationEntity);
 			}
 			
 		};
@@ -354,7 +412,7 @@ public class BasePage extends WebPage {
 		return null;
 	}
 	
-	private boolean checkLength (String data, int minLength, int maxLength) {
+	protected boolean checkLength (String data, int minLength, int maxLength) {
 		return data.length() < minLength || data.length() > maxLength;
 	}
 	
@@ -366,7 +424,7 @@ public class BasePage extends WebPage {
 		return ((HelpDeskSession) getSession()).isSignedIn();
 	}
 	
-	private String lengthMessage(int minLength, int maxLength) {
+	protected String lengthMessage(int minLength, int maxLength) {
 		return "DOTO LATER: minLength " + minLength + " maxLength " + maxLength;
 	}
 	
@@ -392,5 +450,9 @@ public class BasePage extends WebPage {
 	
 	public boolean director() {
 		return getRole().equals(Constants.Roles.DIREC.toString());
+	}
+	
+	public static Date getSysteDate() {
+		return SYSTEM_DATE == null ? new Date() : SYSTEM_DATE;
 	}
 }

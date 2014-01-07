@@ -19,6 +19,8 @@ import com.helpdesk.domain.entity.UserEntity;
 @Repository
 public class RequestDaoJpa implements RequestDao {
 
+	private final static int MAX_REZULT = 10;
+	
 	@PersistenceContext
 	private EntityManager em;
 	
@@ -28,9 +30,11 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAll() {
+	public List<RequestEntity> getAll(int from) {
 		 TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r",
 				 RequestEntity.class);
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -63,28 +67,34 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status) {
+	public List<RequestEntity> getAllByEngineerAndStatus(UserEntity engineerEntity, String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				"r.engineerEntity.id = :id and r.status = :status", RequestEntity.class);
 		query.setParameter("id", engineerEntity.getId());
 		query.setParameter("status", status);
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<RequestEntity> getAllByStatus(String status) {
+	public List<RequestEntity> getAllByStatus(String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				"r.status = :status", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status) {
+	public List<RequestEntity> getAllByEngineerAndNotStatus(UserEntity engineerEntity, String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				"r.engineerEntity.id = :id and r.status != :status", RequestEntity.class);
 		query.setParameter("status", status);
 		query.setParameter("id", engineerEntity.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -106,50 +116,63 @@ public class RequestDaoJpa implements RequestDao {
 	}
 
 	@Override
-	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status) {
+	public List<RequestEntity> getAllByAdminAndNotStatus(UserEntity user, String status, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				" r.administratorEntity.id = :id AND r.status != :status", RequestEntity.class);
 		query.setParameter("status", status);
 		query.setParameter("id", user.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status) {
+	public List<RequestEntity> getAllByBelongsTosAndNotStatu(UserEntity belongsTo, String status, int from, String status2) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status != :status", RequestEntity.class);
+				" r.requestBelongsTo.id = :id AND r.status != :status AND r.status != :status2", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status) {
+	public List<RequestEntity> getAllByBelongsToAndStatus(UserEntity belongsTo, String status, String status2, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.requestBelongsTo.id = :id AND r.status = :status", RequestEntity.class);
+				" r.requestBelongsTo.id = :id AND (r.status = :status OR r.status = :status2)", RequestEntity.class);
 		query.setParameter("status", status);
+		query.setParameter("status2", status2);
 		query.setParameter("id", belongsTo.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user) {
+	public List<RequestEntity> getAllByStatusOrAssignetToUser(String status, UserEntity user, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
-				" r.engineerEntity.id = :id OR r.status = :status", RequestEntity.class);
+				"(r.engineerEntity.id = :id AND r.status != 'SOLVED')  OR " +
+				"(r.status = :status)", RequestEntity.class);
 		query.setParameter("status", status);
 		query.setParameter("id", user.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
 	@Override
 	public List<RequestEntity> getDirectorHistory(UserEntity director,
-			String solved, String assigned) {
+			String solved, String assigned, int from) {
 		TypedQuery<RequestEntity> query = em.createQuery("SELECT r FROM RequestEntity r where " +
 				"(r.engineerEntity.id = :id OR r.administratorEntity.id = :id) AND " +
 				"(r.status = :status1 OR r.status = :status2)", RequestEntity.class);
 		query.setParameter("status1", solved);
 		query.setParameter("status2", assigned);
 		query.setParameter("id", director.getId());
+		query.setMaxResults(MAX_REZULT);
+		query.setFirstResult(from);
 		return query.getResultList();
 	}
 
@@ -161,6 +184,89 @@ public class RequestDaoJpa implements RequestDao {
 		query.setParameter("startDate", startDate, TemporalType.TIMESTAMP);
 		query.setParameter("endDate", endDate, TemporalType.TIMESTAMP);
 		return query.getResultList();
+	}
+
+	@Override
+	public Long getAllByStatusCount(String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				"r.status = :status", Long.class);
+		query.setParameter("status", status);
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByAdminAndNotStatusCount(UserEntity user, String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				" r.administratorEntity.id = :id AND r.status != :status", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("id", user.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllCount() {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r",
+				Long.class);
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByBelongsTosAndNotStatuCount(UserEntity belongsTo, String status, String status2) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				" r.requestBelongsTo.id = :id AND r.status != :status AND r.status != :status2", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("status2", status2);
+		query.setParameter("id", belongsTo.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByBelongsToAndStatusCount(UserEntity belongsTo, String status, String status2) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				" r.requestBelongsTo.id = :id AND (r.status = :status OR r.status = :status2)", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("status2", status2);
+		query.setParameter("id", belongsTo.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByEngineerAndNotStatusCount(UserEntity engineerEntity, String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				"r.engineerEntity.id = :id and r.status != :status", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("id", engineerEntity.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByEngineerAndStatusCount(UserEntity engineerEntity, String status) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				"r.engineerEntity.id = :id and r.status = :status", Long.class);
+		query.setParameter("id", engineerEntity.getId());
+		query.setParameter("status", status);
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getAllByStatusOrAssignetToUserCount(String status, UserEntity user) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				" (r.engineerEntity.id = :id AND r.status != 'SOLVED') OR " +
+				"(r.status = :status)", Long.class);
+		query.setParameter("status", status);
+		query.setParameter("id", user.getId());
+		return query.getSingleResult();
+	}
+
+	@Override
+	public Long getDirectorHistoryCount(UserEntity director, String solved, String assigned) {
+		TypedQuery<Long> query = em.createQuery("SELECT count(r) FROM RequestEntity r where " +
+				"(r.engineerEntity.id = :id OR r.administratorEntity.id = :id) AND " +
+				"(r.status = :status1 OR r.status = :status2)", Long.class);
+		query.setParameter("status1", solved);
+		query.setParameter("status2", assigned);
+		query.setParameter("id", director.getId());
+		return query.getSingleResult();
 	}
 	
 }

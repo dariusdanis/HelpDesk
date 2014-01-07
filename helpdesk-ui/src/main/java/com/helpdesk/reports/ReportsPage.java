@@ -53,29 +53,31 @@ public class ReportsPage extends BasePage {
 		
 		WebMarkupContainer reportsContainer = initReportsContainer("reportsContainer");
 		Form<?> form = initForm("reportsFiterForm", reportsContainer);
-		reportsContainer.add(initReportTable("repeatingView", new ArrayList<RequestEntity>()));
+		reportsContainer.add(initReportTable("repeatingView", new ArrayList<List<Object>>()));
 		form.add(initDateInput("startDate", "startDateStr"));
 		form.add(initDateInput("endDate", "endDateStr"));
 		add(reportsContainer);
 		add(form);
 	}
 
-	private ListView<RequestEntity> initReportTable(String wicketId, List<RequestEntity> requests) {
-		ListModel<RequestEntity> requsetModel = new ListModel<RequestEntity>(requests);
-		ListView<RequestEntity> listView =  new ListView<RequestEntity>(wicketId, requsetModel) {
+	@SuppressWarnings("unchecked")
+	private ListView<Object> initReportTable(String wicketId, ArrayList<List<Object>> requests) {
+		ListModel<List<Object>> requsetModel = new ListModel<List<Object>>(requests);
+		ListView<Object> listView =  new ListView<Object>(wicketId, requsetModel) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void populateItem(ListItem<RequestEntity> item) {
-				RequestEntity requestEntity = item.getModelObject();
+			protected void populateItem(ListItem<Object> item) {
+				RequestEntity requestEntity = ((ArrayList<RequestEntity>)item.getModelObject()).get(0);
 				Link<Object> linkToRequest = initLinkToRequest("linkToRequest", requestEntity.getId());
 				linkToRequest.add(new Label("requestId", requestEntity.getId()));
 				item.add(linkToRequest);
-				item.add(new Label("summary", requestEntity.getSummary()));
-				item.add(new Label("date", requestEntity.getRequestDate()));
+				item.add(new Label("date", new SimpleDateFormat("yyyy-MM-dd HH:mm").format(requestEntity.getRequestDate())));
 				item.add(new Label("type", requestEntity.getTypeEntity().getType()));
 				item.add(new Label("assigned", requestEntity.getEngineerEntity() == null ? "-" : 
 					requestEntity.getEngineerEntity().toString()));
+				Integer lateBy = ((ArrayList<Integer>)item.getModelObject()).get(1);
+				item.add(new Label("lateBy", (lateBy/60) + "h " + (lateBy%60)+"min"));
 				item.add(new Label("status", requestEntity.getStatus()));
 			}
 

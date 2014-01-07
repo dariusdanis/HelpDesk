@@ -119,3 +119,11 @@ textarea {
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
+#pageConteinerd a.active {
+	background-color: #d0dde9;
+}
+
+#pageConteinerd a.active span {
+	color: #000;
+}

@@ -1,7 +1,6 @@
 package com.helpdesk.ui.request;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -9,14 +8,12 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -45,6 +42,8 @@ public class RequestPage extends BasePage {
 	
 	@SpringBean
 	private UserService userService;
+	
+	private String action, timeSpend;
 	
 	public static PageParameters parametersWith(int eventId) {
 		return new PageParameters().add(REQUSET_ID, eventId);
@@ -80,36 +79,68 @@ public class RequestPage extends BasePage {
 		add(initLink("linkToParent","parentId", requestEntity.getParentRequsetId()));
 		add(initReadOnlyTextArea("issue", requestEntity.getRequestText()));
 		add(initReadOnlyInput("facility", requestEntity.getFacilityEntity().getName()));
-		add(initRequestOptionsConteiner("requestOptions"));
+		
 		add(initEngineerConteiner("engineerConteiner", requestEntity));
 		Form<?> form = initForm("requsetForm");
-		form.add(initTextArea("solution","requestEntity.requestSolution"));
-		form.add(initInputField("timeSpend", "requestEntity.timeSpend"));
-		form.add(initTextArea("whatWasDone","requestEntity.whatWasDone"));
-		form.add(initValidateAndShowLink("validateAndShowModal", form));
+		form.add(initSubbmitConteiner("subbmitConteiner"));
+		form.add(initActionSelect("action", "action", getActions()));
+		form.add(initAnswerTextArea("whatWasDone","requestEntity.requestSolution"));
+		form.add(initTimeSpendInput("time", "timeSpend"));
 		add(form);
 	}
 
-	private WebMarkupContainer initValidateAndShowLink(String wicketId, Form<?> form) {
-		WebMarkupContainer container = new WebMarkupContainer("validateAndShowModalConteiner");
-		AjaxSubmitLink ajaxSubmitLink = new AjaxSubmitLink(wicketId){
+	private List<String> getActions() {
+		if (engineer() || (director() && requestEntity.getAdministratorEntity() != null 
+				&& requestEntity.getAdministratorEntity().getId() != getLoggedUser().getId())) {
+			return Constants.ACTIONS_ENG;
+		} else {
+			return Constants.ACTIONS_ADM;
+		}
+	}
+
+	private WebMarkupContainer initSubbmitConteiner(String wicketId) {
+		WebMarkupContainer subbmitConteiner = new WebMarkupContainer(wicketId);
+		subbmitConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) && 
+				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		return subbmitConteiner;
+	}
+
+	private TextArea<String> initAnswerTextArea(String wicketId, String expression) {
+		TextArea<String> textAria = new TextArea<String>(wicketId,
+	               new PropertyModel<String>(this, expression));
+		textAria.setOutputMarkupId(true);
+		return textAria;
+	}
+
+	private WebMarkupContainer initTimeSpendInput(String wicketId, String expression) {
+		TextField<String> textField = new TextField<String>(wicketId,
+				new PropertyModel<String>(this, expression));
+		WebMarkupContainer timeConteiner = new WebMarkupContainer("timeConteiner");
+		timeConteiner.add(textField);
+		timeConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())&& 
+				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		return timeConteiner;
+	}
+
+	private WebMarkupContainer initActionSelect(String wicketId, String expression,
+			List<String> actions) {
+		WebMarkupContainer actionConteiner = new WebMarkupContainer("actionConteiner");
+		DropDownChoice<String> action = new DropDownChoice<String>(wicketId,
+				new PropertyModel<String>(this, expression), actions) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				List<Object> validationError = validateRequsetForm(
-						Arrays.asList(new String[]{"requestSolution"}),
-						requestEntity);
-				if (validationError != null) {
-					appendJavaScript(target, validationError.get(0), validationError.get(1));
-				} else {
-					target.appendJavaScript("$('#modal').modal('show')");
-				}
+			protected CharSequence getDefaultChoice(String selectedValue) {
+				return "";
 			}
 		};
-		container.add(ajaxSubmitLink);
-		container.setVisible(assingedToLoggedUser());
-		return container;
+		actionConteiner.add(action);
+		actionConteiner.setVisible((requestEntity.getEngineerEntity() != null && 
+				requestEntity.getEngineerEntity().getId() == getLoggedUser().getId())&& 
+				!requestEntity.getStatus().equals(Constants.Status.SOLVED));
+		return actionConteiner;
 	}
 
 	private Form<?> initForm(String wicketId) {
@@ -121,22 +152,40 @@ public class RequestPage extends BasePage {
 			protected void onSubmit(AjaxRequestTarget target) {
 				if (requestEntity.getEngineerEntity() != null && 
 						requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) {
-					
 					List<Object> validationError = validateRequsetForm( 
-							Arrays.asList(new String[]{"requestSolution", "timeSpend", "whatWasDone"}),
-							requestEntity);
+							Arrays.asList(new String[]{"requestSolution", "timeSpend", "whatWasDone"}));
 					if (validationError != null) {
 						appendJavaScript(target, validationError.get(0), validationError.get(1));
 					} else {
-						try {
-							Integer.parseInt(requestEntity.getTimeSpend());
+						switch (action) {
+						case "Back To Administration!":
+							requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
+							requestEntity.setEngineerEntity(null);
+							requestService.merge(requestEntity);
+							notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getAdministratorEntity()}),
+									Constants.BACK_TO_ADMIN);
+							sendToUser(requestEntity.getAdministratorEntity(),
+									Constants.BACK_TO_ADMIN);
+							setResponsePage(HomePage.class);
+							break;
+						case "Solved!":
+							if (requestEntity.getTimeSpend() == null){
+								requestEntity.setTimeSpend(timeSpend);
+							} else {
+								requestEntity.setTimeSpend(String.valueOf(Integer.parseInt(requestEntity.getTimeSpend()) + 
+										Integer.parseInt(timeSpend)));
+							}
 							requestEntity.setStatus(Constants.Status.SOLVED.toString());
-							requestEntity.setSolveDate(new Date());
+							requestEntity.setSolveDate(BasePage.getSysteDate());
 							notificationHandler(requestService.merge(requestEntity), 
 									Constants.REQUEST_SOLVE);
 							setResponsePage(HomePage.class);
-						} catch (Exception e) {
-							appendJavaScript(target, "timeSpend" , "Bad time!");
+							break;
+						case "Woun't Solve!":
+							requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
+							notificationHandler(requestService.merge(requestEntity), Constants.WOUNT_SOLVE);
+							setResponsePage(HomePage.class);
+							break;
 						}
 					}
 				}
@@ -145,6 +194,31 @@ public class RequestPage extends BasePage {
 		});
 		
 		return form;
+	}
+
+	protected List<Object> validateRequsetForm(List<String> asList) {
+		if (action == null) {
+			return Arrays.asList(new Object[]{"action", Constants.REQUIRED});
+		}
+		
+		if (timeSpend == null) {
+			return Arrays.asList(new Object[]{"time", Constants.REQUIRED});
+		} else {
+			try {
+				Integer.valueOf(timeSpend);
+			} catch (Exception e) {
+				return Arrays.asList(new Object[]{"time", "Bad time!"});
+			}
+		}
+		if (requestEntity.getRequestSolution() == null) {
+			return Arrays.asList(new Object[]{"whatWasDone", Constants.REQUIRED});
+		} else {
+			if (checkLength(action, Constants.MIN_LENGTH, Constants.MAX_LENGTH_TAREA)) {
+				return Arrays.asList(new Object[]{"whatWasDone", 
+						lengthMessage(Constants.MIN_LENGTH, Constants.MAX_LENGTH)});
+			}
+		}
+		return null;
 	}
 
 	private TextField<String> initReadOnlyInput(String wicketId, String value) {
@@ -174,20 +248,6 @@ public class RequestPage extends BasePage {
 		return textAria;
 	}
 	
-	private TextArea<String> initTextArea(String wicketId, String expression) {
-		 TextArea<String> textAria = new TextArea<String>(wicketId,
-	                new PropertyModel<String>(this, expression));
-		 textAria.setOutputMarkupId(true);
-		 return textAria;
-	}
-	
-	private TextField<String> initInputField(String wicketId, String expression) {
-		TextField<String> textField = new TextField<String>(wicketId,
-				new PropertyModel<String>(this, expression));
-		textField.setOutputMarkupId(true);
-		return textField;
-	}
-	
 	private String getClientInfo(RequestEntity requestEntity) {
 		String clientName = requestEntity.getRequestBelongsTo().getName();
 		String clientNumber = requestEntity.getRequestBelongsTo().getPhone();
@@ -209,58 +269,6 @@ public class RequestPage extends BasePage {
 			return true;
 		}
 		return false;
-	}
-	
-	private WebMarkupContainer initRequestOptionsConteiner(String wicketId) {
-		WebMarkupContainer container = new WebMarkupContainer(wicketId);
-		container.add(initWountSolveLink());
-		container.add(initBackToAdminLink());
-		container.setVisible(assingedToLoggedUser());
-		return container;
-	}
-
-	private Link<Object> initBackToAdminLink() {
-		Link<Object> link = new Link<Object>("backToAdmin") {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick() {
-				requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
-				requestEntity.setEngineerEntity(null);
-				requestService.merge(requestEntity);
-				notificationService.merge(requestEntity, Arrays.asList(new UserEntity[]{requestEntity.getAdministratorEntity()}),
-						Constants.BACK_TO_ADMIN);
-				sendToUser(requestEntity.getAdministratorEntity(),
-						Constants.BACK_TO_ADMIN);
-				setResponsePage(HomePage.class);
-			}
-		};
-		
-		if (engineer() || (director() && requestEntity.getAdministratorEntity() != null 
-				&& requestEntity.getAdministratorEntity().getId() != getLoggedUser().getId())) {
-			link.setVisible(true);
-		} else {
-			link.setVisible(false);
-		}
-		
-		return link;
-	}
-
-	private  Link<Object> initWountSolveLink() {
-		Link<Object> link = new Link<Object>("wountSolve") {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void onClick() {
-				requestEntity.setStatus(Constants.Status.WONT_SOLVE.toString());
-				notificationHandler(requestService.merge(requestEntity), Constants.WOUNT_SOLVE);
-				setResponsePage(HomePage.class);
-			}
-			
-		};
-		
-		link.setVisible(engineer() || director());
-		return link;
 	}
 	
 	protected void notificationHandler(RequestEntity requestEntity, String message) {
@@ -367,17 +375,6 @@ public class RequestPage extends BasePage {
 		choice.setVisible(false);
 		choice.setOutputMarkupId(true);
 		return choice;
-	}
-	
-	private boolean assingedToLoggedUser() {
-		if (requestEntity.getEngineerEntity() == null) {
-			return false;
-		} else if (!requestEntity.getStatus().equals(Constants.Status.ASSIGNED.toString())) {
-			return false;
-		} else if (requestEntity.getEngineerEntity().getId() == getLoggedUser().getId()) {		
-			return true;
-		}
-		return false;
 	}
 	
 }
